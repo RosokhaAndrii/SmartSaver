@@ -1,0 +1,5 @@
+Головна сторінка: https://www.figma.com/design/TWG0c6FNQc9rhOgyRXH5YG/SmartSaver?node-id=0-1&t=7lGVOuHNaIdyZXbv-1
+Автентифікація: https://www.figma.com/design/TWG0c6FNQc9rhOgyRXH5YG/SmartSaver?node-id=1-1976&t=7lGVOuHNaIdyZXbv-1
+Сторінка транзакцій: https://www.figma.com/design/TWG0c6FNQc9rhOgyRXH5YG/SmartSaver?node-id=1-1267&t=7lGVOuHNaIdyZXbv-1
+Сторінка гаманців: https://www.figma.com/design/TWG0c6FNQc9rhOgyRXH5YG/SmartSaver?node-id=4-92&t=7lGVOuHNaIdyZXbv-1
+Сторінка цілей: https://www.figma.com/design/TWG0c6FNQc9rhOgyRXH5YG/SmartSaver?node-id=1-1992&t=7lGVOuHNaIdyZXbv-1
