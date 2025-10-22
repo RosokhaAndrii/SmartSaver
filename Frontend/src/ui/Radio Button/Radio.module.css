@@ -1,0 +1,75 @@
+.radioGroup {
+  --size: 20px;        
+  --dot-size: 10px;     
+  --gap: 12px;
+  --muted: #bdbdbd;
+  --accent: #ffffff;
+  --border: rgba(255,255,255,0.18);
+  background: #0b0b0b;  
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--muted);
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.custom {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+}
+
+.custom::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform .14s cubic-bezier(.2,.9,.2,1);
+}
+
+.input:checked + .custom {
+  border-color: rgba(255,255,255,0.95);
+}
+.input:checked + .custom::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.input:focus + .custom {
+  box-shadow: 0 0 0 6px rgba(255,255,255,0.04);
+  outline: none;
+}
+
+.labelText {
+  line-height: 1;
+}
