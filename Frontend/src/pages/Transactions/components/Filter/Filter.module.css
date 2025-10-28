@@ -1,0 +1,94 @@
+.filterSection {
+  background: #0b0b0b;
+  border: 2px solid #282727;
+  border-radius: 12px;
+  padding: 32px 24px;
+  max-width: 480px;
+  color: #ffffff;
+  position: relative;
+}
+
+.filterTitle {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 32px 0;
+  color: #ffffff;
+}
+
+.filterSettings {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.filterLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.filterInput {
+  width: 100%;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 16px;
+  color: #000000;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.filterInput::placeholder {
+  color: #9e9e9e;
+}
+
+.filterInput:focus {
+  border-color: #666666;
+}
+
+.radioGroup {
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.radioGroupTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+
+.cancelButton {
+  width: 35%;
+  padding: 14px 24px;
+  background: transparent;
+  border: 2px solid #282727;
+  border-radius: 28px;
+  color: #ff4444;
+  font-size: 16px;
+  position: absolute;
+  top: 700px;
+  right: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 68, 68, 0.1);
+}
+
+.cancelButton:active {
+  transform: scale(0.98);
+}

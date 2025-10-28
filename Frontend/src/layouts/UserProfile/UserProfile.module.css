@@ -3,6 +3,7 @@
   align-items: center; 
   padding: 20px 20px;
   margin-bottom: 10px;
+  border-bottom: 2px solid #282727 ;
 }
 
 .avatarCircle {

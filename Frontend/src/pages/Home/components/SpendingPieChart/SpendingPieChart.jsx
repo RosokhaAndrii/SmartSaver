@@ -10,7 +10,7 @@ const data = [
 
 export default function SpendingPieChart() {
   return (
-    <div style={{ width: '100%', height: 300 }}>
+    <div style={{ width: '100%', height: 300, }}>
       <ResponsiveContainer>
         <PieChart>
           <Pie
@@ -19,10 +19,10 @@ export default function SpendingPieChart() {
             nameKey="name"  
             cx="50%"        
             cy="50%"        
-            innerRadius={60} 
+            innerRadius={70} 
             outerRadius={90}
-            paddingAngle={2} 
             fill="#8884d8"   
+            stroke='none'
           >
 
             {data.map((entry, index) => (
