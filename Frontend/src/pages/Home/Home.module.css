@@ -1,13 +1,14 @@
 .mainContent {
-  margin-left: 250px;
+  margin-left: 260px;
   min-height: 100vh;
   background-color: #0C0B0B;
   color: #f0f0f0;
-
+  position: relative;
 }
 
 .contentWrapper {
   padding: 30px 40px;
+  padding-top: 80px;
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -20,7 +21,6 @@
   text-align: center;
 }
 
-/* Секція з картками */
 .cardsSection {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -28,7 +28,6 @@
   margin-bottom: 40px;
 }
 
-/* Секція з графіками */
 .chartsSection {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -45,9 +44,16 @@
 }
 
 .chartHeader {
+  position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 20px;
+}
+
+.Spendings{
+  position: absolute;
+  left: 300px;
+  bottom:13px
 }
 
 @media (max-width: 1400px) {

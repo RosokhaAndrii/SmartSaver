@@ -1,0 +1,109 @@
+:root{
+  --size: 25px;       
+  --dot: 15px;        
+  --gap: 14px;        
+  --muted: rgba(255,255,255,0.7);
+  --muted-sub: rgba(255,255,255,0.36);
+  --border: rgba(255,255,255,0.18);
+  --accent: #ffffff;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap);
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+
+.custom {
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  transition: border-color .12s ease, box-shadow .12s ease, transform .08s ease;
+  flex: 0 0 auto;
+  background: transparent;
+}
+
+
+.custom::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--dot);
+  height: var(--dot);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform .12s cubic-bezier(.2,.9,.2,1);
+}
+
+
+.input:checked + .custom {
+  border-color: rgba(255,255,255,0.95);
+}
+.input:checked + .custom::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.input:focus-visible + .custom {
+  box-shadow: 0 0 0 8px rgba(255,255,255,0.04);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+
+.labelText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.main {
+  color: var(--muted);
+  font-size: 20px;         
+  line-height: 1;
+  font-weight: 500;
+}
+
+.sub {
+  color: var(--muted-sub);
+  font-size: 12px;         
+  line-height: 1;
+}
+
+
+.input:disabled + .custom {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.radio[aria-disabled="true"] {
+  cursor: not-allowed;
+}

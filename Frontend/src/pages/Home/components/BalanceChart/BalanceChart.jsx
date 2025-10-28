@@ -59,6 +59,7 @@ export default function BalanceChart({
             <CartesianGrid 
               stroke="#333" 
               vertical={true}
+              fill="#0C0B0B"
             />
             
             <XAxis 

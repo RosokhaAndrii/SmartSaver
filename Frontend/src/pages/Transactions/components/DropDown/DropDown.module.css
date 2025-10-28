@@ -1,0 +1,116 @@
+:root{
+  --bar-h: 44px;
+  --bar-radius: 22px;
+  --pill-bg: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.9);
+  --muted-2: rgba(255,255,255,0.75);
+  --shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+/* container */
+.root {
+  position: relative;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* pill bar */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--bar-h);
+  padding: 6px;
+  background: var(--pill-bg);
+  border-radius: var(--bar-radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+/* side arrow buttons */
+.sideBtn {
+  width: 36px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--muted-2);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sideBtn:hover { background: rgba(255,255,255,0.02); }
+
+/* central toggle */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 18px;
+  border-radius: 18px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  min-width: 260px;
+  justify-content: center;
+  cursor: pointer;
+}
+.marker { display:inline-flex; align-items:center; justify-content:center; }
+.label { font-weight: 600; color: var(--muted-2); font-size: 15px; }
+.caret { display:inline-flex; align-items:center; justify-content:center; color: var(--muted-2); }
+
+/* menu wrapper positioned under button, centered */
+.menuWrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(var(--bar-h) + 12px);
+  z-index: 80;
+  pointer-events: auto;
+}
+
+/* small arrow "notch" (a rotated square or triangle) */
+.menuArrow {
+  width: 18px;
+  height: 10px;
+  margin: 0 auto;
+  transform: translateY(-4px);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background: #080808; /* matches menu background */
+  border-left: 1px solid rgba(255,255,255,0.03);
+  border-right: 1px solid rgba(255,255,255,0.03);
+}
+
+/* menu */
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  min-width: 200px;
+  background: #080808;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+
+/* each item */
+.menuItem {
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--muted-2);
+  cursor: pointer;
+  font-size: 14px;
+}
+.menuItem + .menuItem { border-top: 1px solid rgba(255,255,255,0.02); }
+.menuItem:hover, .menuItem:focus {
+  background: rgba(255,255,255,0.02);
+  outline: none;
+  color: var(--muted);
+}

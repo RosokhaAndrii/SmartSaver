@@ -1,70 +1,96 @@
-
-
 .card {
-  width: 250px;
-  height: 150px;
+  width: 100%;
+  min-height: 170px;
   background-color: #1a1a1a;
   color: #f0f0f0;
-  padding: 15px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid #333; 
+  border: 2px solid #333;
   transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #aaa; 
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.iconWrapper svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 .title {
   font-size: 1rem;
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
+  font-weight: 500;
 }
 
 .body {
-  margin: 10px 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .value {
   font-size: 2rem;
   font-weight: bold;
+  line-height: 1;
+}
+
+.footer {
+  margin-top: 10px;
 }
 
 .footerText {
-  font-size: 0.85rem;
-  color: #aaa; 
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
 .income {
-  border: 2px solid #38c172; /* Зелена рамка */
+  border-color: #11F120;
 }
 
 .expense {
-  border: 2px solid #e3342f; /* Червона рамка */
+  border-color: #FF0000;
 }
 
 .savings {
-  border: 2px solid #f0f0f0; /* Біла рамка */
+  border-color: #FFFFFF;
 }
 
 .goals {
-  border: 2px solid #38c172; /* Зелена рамка */
+  border-color: #11F120;
 }
 
 .green {
-  color: #38c172; /* Зелений */
+  color: #11F120;
 }
 
 .red {
-  color: #e3342f; /* Червоний */
+  color: #FF0000;
+}
+
+.default {
+  color: #aaa;
 }
