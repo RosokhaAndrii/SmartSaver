@@ -1,0 +1,81 @@
+.mainContent {
+  margin-left: 250px;
+  min-height: 100vh;
+  background-color: #0C0B0B;
+  color: #f0f0f0;
+
+}
+
+.contentWrapper {
+  padding: 30px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 30px 0;
+  color: #f0f0f0;
+  text-align: center;
+}
+
+/* Секція з картками */
+.cardsSection {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Секція з графіками */
+.chartsSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.chartBox {
+  background-color: #0C0B0B;;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 25px;
+  min-height: 400px;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1400px) {
+  .cardsSection {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .chartsSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+  }
+  
+  .contentWrapper {
+    padding: 20px;
+  }
+  
+  .cardsSection {
+    grid-template-columns: 1fr;
+  }
+  
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+}
