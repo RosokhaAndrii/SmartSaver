@@ -5,13 +5,28 @@
 }
 
 body {
-    font-family: 'Times New Roman', Times, serif;
+  font-family: 'Roboto', 'Segoe UI', 
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
+    'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #0C0B0B;
+  color: white;
 }
 
 #root {
   margin: 0;
   padding: 0;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/Fonts/roboto-v49-cyrillic_latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }

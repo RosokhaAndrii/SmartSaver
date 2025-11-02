@@ -1,0 +1,16 @@
+.dropDownButton {
+    display: flex;
+    align-items: center;
+    width:fit-content;
+    padding: 1rem;
+    background-color: #0C0B0B;
+    border-radius: 34px;
+    cursor: pointer;
+}
+
+.toggleIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+}

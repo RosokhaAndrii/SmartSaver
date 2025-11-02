@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Card.module.css';
@@ -6,10 +5,15 @@ import styles from './Card.module.css';
 export default function Card({ title, value, footerText, Icon, variant, footerColor }) {
   const cardClassName = `${styles.card} ${styles[variant]}`;
   const footerClassName = `${styles.footerText} ${styles[footerColor]}`;
+  
   return (
     <div className={cardClassName}>
       <div className={styles.header}>
-        {Icon && <Icon className={styles.icon} />} 
+        {Icon && (
+          <span className={styles.iconWrapper}>
+            <Icon />
+          </span>
+        )}
         <span className={styles.title}>{title}</span>
       </div>
       

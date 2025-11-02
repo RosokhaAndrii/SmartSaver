@@ -1,0 +1,11 @@
+.mainContent {
+  margin-left: 260px; 
+  min-height: 100vh;
+  background-color: #0C0B0B;
+}
+
+.filterSection{
+    margin-left: 15px;
+    max-width: 60vh;
+    max-height: 10vh;
+}

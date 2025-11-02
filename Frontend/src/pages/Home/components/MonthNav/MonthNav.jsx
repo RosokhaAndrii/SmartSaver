@@ -50,13 +50,14 @@ export default function MonthNav({ initialDate = new Date() }) {
 
   return (
     <div className={styles.monthNavigator}>
-      <button
+  <button
         className={styles.navButton}
         onClick={goToPreviousMonth}
         type="button"
       >
         <ChevronLeftIcon />
       </button>
+    
 
       <span className={styles.monthLabel}>{getMonthLabel(currentDate)}</span>
 

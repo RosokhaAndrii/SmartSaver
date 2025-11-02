@@ -9,6 +9,7 @@ import styles from './Home.module.css';
 
 import PaymentIcon from '../../assets/icons/PaymentIcon.jsx';
 import FinancialInstituionIcon from '../../assets/icons/FinancialnstituionIcon.jsx';
+import CardIcon from '../../assets/icons/CardIcon.jsx';
 import InformationSignIcon from '../../assets/icons/InformationSignIcon.jsx';
 
 export default function Home() {
@@ -21,7 +22,6 @@ export default function Home() {
         <div className={styles.contentWrapper}>
           <h1 className={styles.pageTitle}>Аналітика та грошовий потік</h1>
           
-          {/* Section 1-5: Картки */}
           <div className={styles.cardsSection}>
             <Card
               title="Місячний дохід"
@@ -36,7 +36,7 @@ export default function Home() {
               title="Місячні витрати"
               value="3800$"
               footerText="+5,4% з минулого місяця"
-              Icon={PaymentIcon}
+              Icon={CardIcon}
               variant="expense"
               footerColor="red"
             />
@@ -61,10 +61,10 @@ export default function Home() {
           </div>
 
           <div className={styles.chartsSection}>
-            {/* Section 7: Pie Chart */}
             <div className={styles.chartBox}>
               <div className={styles.chartHeader}>
                 <MonthNav />
+                <p className={styles.Spendings}>Загальні витрати: 3800$</p>
               </div>
               <SpendingPieChart />
             </div>

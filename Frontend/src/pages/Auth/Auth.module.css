@@ -1,0 +1,89 @@
+.Container {
+    background-color: #0C0B0B;
+    color: white;
+    font-size: 16px;
+    min-height: 100vh; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+}
+
+.Logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.Logo h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 10px 0 0 0;
+}
+
+.Icon svg {
+    width: 40px;
+    height: 40px;
+    fill: white;
+    position: absolute;
+    left:650px;
+    top:136px;
+
+}
+
+.authContainer {
+    border: 3px solid #282727;
+    padding: 40px;
+    border-radius: 8px;
+    width: 350px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.Label {
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+.Input {
+    background-color: white; 
+    color: #f0f0f0;
+    border: 1px solid #444; 
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+}
+
+.Input:focus {
+    border-color: #585858; 
+    outline: none;
+}
+
+.link {
+    font-size: 1rem;
+}
+
+.link p {
+    margin: 0;
+}
+
+.link a {
+    color: #4A90E2; 
+    text-decoration: none;
+    font-weight: bold;
+}
