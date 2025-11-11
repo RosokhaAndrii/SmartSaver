@@ -1,0 +1,124 @@
+.summary {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 16px;
+  border: 3px solid #282727;
+  border-radius: 6px;
+  box-sizing: border-box;
+  position: relative;
+  margin-top: 40px;
+}
+
+.left {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.chartWrap {
+  width: 170px;
+  height: 170px;
+  min-width: 170px;
+}
+
+.legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legendItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+.legendTextWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.legendMain {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.labelText {
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.smallText {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+}
+
+.wallets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.walletPill {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.walletsInline {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.right {
+  margin-left: auto;
+  text-align: right;
+  position: absolute;
+  left: 1000px;
+  top:5px;
+}
+.totalLabel {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 16px;
+}
+.totalValue {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .summary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .chartWrap {
+    width: 100%;
+    min-width: auto;
+    height: 180px;
+  }
+  .right {
+    text-align: left;
+    margin-left: 0;
+  }
+}

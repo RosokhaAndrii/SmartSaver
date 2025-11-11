@@ -8,7 +8,7 @@ export default function Legend({data}) {
     {data.map((item) => (
       <li key={item.name} className={styles.legendItem}>
         <span 
-          className={styles.colorDot} 
+          className={styles.colorDot}  
           style={{ backgroundColor: item.color }} 
         ></span>
         {item.name} - {item.value}$

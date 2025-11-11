@@ -1,18 +1,20 @@
-import React from 'react'
-import './App.css'
-import Home from './pages/Home/Home'
-// import Auth from './pages/Auth/Auth'
-// import Registration from './pages/Registraition/Registraition'
-// import Transactions from './pages/Transactions/Transactions'
-// import DropDown from './pages/Transactions/components/DropDown/DropDown'
-function App() {
-    return(
+import React, { useState } from 'react';
+import { Outlet } from 'react-router';
+import SideBarNav from './layouts/SideBarNav/SideBarNav';
+import Header from './layouts/Header/Header';
+import './App.css';
+export default function App() {
+  const [pageName, setPageName] = useState(''); 
 
-        <Home></Home>
-        // <Auth></Auth>
-        // <Registration></Registration>
-        // <Home></Home> 
-    )
+  return (
+    <div >
+      <SideBarNav />
+      <div >
+        <Header pageName={pageName} />
+        <main>
+          <Outlet context={{ setPageName }} />
+        </main>
+      </div>
+    </div>
+  );
 }
-
-export default App

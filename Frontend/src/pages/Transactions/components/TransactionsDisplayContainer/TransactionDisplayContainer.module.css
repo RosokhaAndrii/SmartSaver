@@ -1,0 +1,90 @@
+.container {
+  width: 100%;
+  max-width: 900px;
+  background: #0C0B0B;
+  border: 3px solid #282727;
+  padding: 24px;
+  margin-top: 24px;
+  box-sizing: border-box;
+}
+
+.containerTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #282727;
+  margin: 0 calc(-1 * 24px) 16px; 
+  padding: 10px 24px;
+  box-sizing: border-box;
+}
+
+
+.titleLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.count {
+  display: inline-block;
+  min-width: 36px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.03);
+  color: #ffffff;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.35) inset;
+}
+
+.totalBlock {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.totalLabel {
+  color: #ffffff;
+  opacity: 0.85;
+  font-size: 14px;
+}
+
+.totalValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.positive { color: #8be28b; }   
+.negative { color: #ff6b6b; }   
+.transactionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+@media (max-width: 800px) {
+  .container {
+    padding: 18px;
+  }
+  .containerTitle {
+    padding: 10px 18px;
+  }
+  .title {
+    font-size: 22px;
+  }
+  .totalValue {
+    font-size: 18px;
+  }
+}

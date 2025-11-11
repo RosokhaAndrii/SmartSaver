@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './RadioButton.module.css';
 import PropTypes from 'prop-types';
 
-
 export default function RadioButton({ name, value, checked, onChange, label, sub, disabled }) {
   const id = `${name}-${value}`;
   return (
@@ -37,7 +36,7 @@ RadioButton.propTypes = {
 };
 RadioButton.defaultProps = {
   name: '',
-  value: '',  
+  value: '',
   checked: false,
   onChange: undefined,
   label: '',

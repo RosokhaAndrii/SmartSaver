@@ -7,4 +7,9 @@
     border: 3px solid #282727;
     cursor:pointer;
     font-size:14px;
+    color:white;
+}
+
+.icon{
+    margin-right: 20px;
 }

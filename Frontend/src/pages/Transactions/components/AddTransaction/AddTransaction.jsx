@@ -1,19 +1,21 @@
 import React from 'react'
-import Button from '../../../../ui/Button/Button'
 import AddIcon from '../../../../assets/icons/AddIcon'
-import PropTypes from 'prop-types'
-const AddTransaction = ({children}) => {
+import PropTypes from 'prop-types';
+import styles from './AddTransaction.module.css';
 
-    function handleClick() {
+export default function AddTransaction({onClick}) {
 
-    }
   return (
-    <Button icon={<AddIcon></AddIcon>} onClick={handleClick}>{children}</Button>
-  )
+    <button onClick={onClick} className={styles.addButton}>
+      <span className={styles.icon}><AddIcon></AddIcon></span>
+      <p className={styles.title}>Додати транзакцію</p>
+    </button>
+  );
 }
 
 AddTransaction.propTypes = {
-    children: PropTypes.node
+  onClick: PropTypes.func
 }
-
-export default AddTransaction
+AddTransaction.defaultProps = {
+  onClick: () => {}
+}

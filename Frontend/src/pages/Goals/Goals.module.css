@@ -1,0 +1,72 @@
+:root{
+  --sidebar-w: 250px;
+  --header-h: 70px;
+  --gutter: 24px;
+  --bg: #0C0B0B;
+  --panel-border: #282727;
+}
+
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: #fff;
+}
+
+.main {
+  margin-left: 236px; 
+  padding-top: var(--header-h);  
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+  padding-bottom: 48px;
+  box-sizing: border-box;
+}
+
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+
+.section {
+  border: 3px solid var(--panel-border);
+  padding: 16px;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.sectionHeader {
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.sectionActions {
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px 20px;
+}
+
+
+@media (max-width: 980px) {
+  .main { padding-left: 12px; padding-right: 12px; }
+  .content { max-width: 100%; }
+  .cardsGrid { grid-template-columns: 1fr; }
+}

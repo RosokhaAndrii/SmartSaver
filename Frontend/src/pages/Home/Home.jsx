@@ -1,23 +1,26 @@
 import React from "react";
-import SideBarNav from "../../layouts/SideBarNav/SideBarNav";
-import Header from "../../layouts/Header/Header";
 import Card from './components/Card/Card';
 import SpendingPieChart from "./components/SpendingPieChart/SpendingPieChart";
 import BalanceChart from "./components/BalanceChart/BalanceChart";
 import MonthNav from "./components/MonthNav/MonthNav";
 import styles from './Home.module.css';
-
 import PaymentIcon from '../../assets/icons/PaymentIcon.jsx';
 import FinancialInstituionIcon from '../../assets/icons/FinancialnstituionIcon.jsx';
 import CardIcon from '../../assets/icons/CardIcon.jsx';
 import InformationSignIcon from '../../assets/icons/InformationSignIcon.jsx';
-
+import usePageTitle from "../../hooks/usePageTitle/usePageTitle";
+const data = [
+  { name: 'Оренда житла', value: 600, color: '#FF9800' }, 
+  { name: 'Розваги', value: 900, color: '#4CAF50' }, 
+  { name: 'Продукти', value: 1400, color: '#F44336' }, 
+  { name: 'Одяг', value: 900, color: '#9C27B0' }, 
+];
 export default function Home() {
+  usePageTitle('Головна')
   return (
     <>
-      <SideBarNav />
+
       <div className={styles.mainContent}>
-        <Header pageName="Головна" />
         
         <div className={styles.contentWrapper}>
           <h1 className={styles.pageTitle}>Аналітика та грошовий потік</h1>
@@ -66,7 +69,7 @@ export default function Home() {
                 <MonthNav />
                 <p className={styles.Spendings}>Загальні витрати: 3800$</p>
               </div>
-              <SpendingPieChart />
+              <SpendingPieChart data={data} />
             </div>
             
             <div className={styles.chartBox}>

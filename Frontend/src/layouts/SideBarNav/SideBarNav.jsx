@@ -12,7 +12,7 @@ import UserProfile from '../UserProfile/UserProfile.jsx';
 
 
 const items = [
-  { path: '/', label: 'Головна', icon: HomeIcon },
+  { path: '/home', label: 'Головна', icon: HomeIcon },
   { path: '/transactions', label: 'Транзакції', icon: DescriptionIcon },
   { path: '/wallets', label: 'Гаманці', icon: DoubleCardIcon },
   { path: '/goals', label: 'Цілі', icon: CheckIcon },

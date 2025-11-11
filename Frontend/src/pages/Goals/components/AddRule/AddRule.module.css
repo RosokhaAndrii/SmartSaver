@@ -1,0 +1,37 @@
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #0C0B0B;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 29px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: all 0.2s;
+  min-height: 40px;
+  min-width: 180px;
+  position: relative;
+}
+
+.addButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.icon {
+    position: absolute;
+    left:10px;
+    bottom:3px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.title{
+    right: 15px;
+    position: absolute;
+}
