@@ -4,8 +4,34 @@
   background-color: #0C0B0B;
 }
 
-.filterSection{
-    margin-left: 15px;
-    max-width: 60vh;
-    max-height: 10vh;
+.main {
+  padding-top: 80px; 
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 480px 1fr; 
+  gap: 30px;
+  padding: 30px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+
+.transactionsColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0; 
+}
+
+
+@media (max-width: 1200px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filterColumn {
+    max-width: 480px;
+  }
 }

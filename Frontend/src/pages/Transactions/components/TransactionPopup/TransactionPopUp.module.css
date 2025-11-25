@@ -1,0 +1,126 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+}
+
+.modal {
+  width: 520px;
+  max-width: 100%;
+  background: #0C0B0B;
+  border: 2px solid #282727;
+  border-radius: 12px;
+  padding: 18px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.title {
+  margin: 0;
+  font-size: 18px;
+}
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; 
+}
+
+input[type=number] {
+    -moz-appearance:textfield; 
+}
+
+.input,
+.textarea,
+select {
+  background: #0C0B0B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #fff;
+  outline: none;
+}
+.input:focus,
+.textarea:focus, 
+select:focus {
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  color: #fff;
+  font-size: 14px;
+}
+.row > .radio input {
+  margin: 0;
+}
+
+.error {
+  color: #ff6b6b;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+.cancel,
+.submit {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+.submit {
+  background: linear-gradient(90deg, #1dd06a, #12c14d);
+  border: none;
+  color: #050505;
+}

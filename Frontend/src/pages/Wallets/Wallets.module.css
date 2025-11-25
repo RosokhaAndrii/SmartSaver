@@ -1,0 +1,44 @@
+.mainContent {
+  margin-left: 260px;
+  min-height: 100vh;
+  background-color: #0c0b0b;
+  width: auto;
+}
+
+.main {
+  padding: 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.walletsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.walletList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.categoryGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.walletItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addButtonWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}

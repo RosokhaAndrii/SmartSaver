@@ -1,39 +1,34 @@
-import {React, useState} from "react"
+import React, { useEffect } from "react";
 import RadioButton from "../../../../ui/Radio Button/RadioButton";
-import styles from "./Filter.module.css"
-export default function Filter() {
-  const [filters, setFilters] = useState({
-    category: '',
-    from: '',
-    notes: '',
-    wallet: '',
-    type: 'all'
-  });
+import styles from "./Filter.module.css";
 
-  const handleInputChange = (e) => {
+export default function Filter({ value = {}, onChange = () => {} }) {
+  const defaults = {
+    category: "",
+    dateFrom: "",
+    dateTo: "",
+    notes: "",
+    wallet: "",
+    type: "all",
+  };
+
+  const filters = { ...defaults, ...(value || {}) };
+
+  function handleInputChange(e) {
     const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+    onChange({ ...filters, [name]: value });
+  }
 
-  const handleTypeChange = (e) => {
-    setFilters(prev => ({
-      ...prev,
-      type: e.target.value
-    }));
-  };
+  function handleTypeChange(e) {
+    onChange({ ...filters, type: e.target.value });
+  }
 
-  const handleCancel = () => {
-    setFilters({
-      category: '',
-      from: '',
-      notes: '',
-      wallet: '',
-      type: 'all'
-    });
-  };
+  function handleReset() {
+    onChange(defaults);
+  }
+
+  useEffect(() => {
+  }, [value]);
 
   return (
     <section className={styles.filterSection}>
@@ -42,48 +37,58 @@ export default function Filter() {
       <div className={styles.filterSettings}>
         <label className={styles.filterLabel}>
           Категорія
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="category"
             value={filters.category}
             onChange={handleInputChange}
-            placeholder="Value"
+            placeholder="Категорія або частина"
             className={styles.filterInput}
           />
         </label>
 
         <label className={styles.filterLabel}>
-          З/до
-          <input 
-            type="text" 
-            name="from"
-            value={filters.from}
+          Дата (від)
+          <input
+            type="date"
+            name="dateFrom"
+            value={filters.dateFrom}
             onChange={handleInputChange}
-            placeholder="Value"
+            className={styles.filterInput}
+          />
+        </label>
+
+        <label className={styles.filterLabel}>
+          Дата (до)
+          <input
+            type="date"
+            name="dateTo"
+            value={filters.dateTo}
+            onChange={handleInputChange}
             className={styles.filterInput}
           />
         </label>
 
         <label className={styles.filterLabel}>
           Нотатки
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="notes"
             value={filters.notes}
             onChange={handleInputChange}
-            placeholder="Value"
+            placeholder="Пошук по нотатці"
             className={styles.filterInput}
           />
         </label>
 
         <label className={styles.filterLabel}>
           Ім&apos;я гаманця
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="wallet"
             value={filters.wallet}
             onChange={handleInputChange}
-            placeholder="Value"
+            placeholder="Пошук по гаманцю"
             className={styles.filterInput}
           />
         </label>
@@ -93,35 +98,35 @@ export default function Filter() {
         <div className={styles.radioGroupTitle}>Тип</div>
 
         <RadioButton
-          name="type"
+          name="filter-type"
           label="Всі"
           value="all"
-          checked={filters.type === 'all'}
+          checked={filters.type === "all"}
           onChange={handleTypeChange}
         />
 
         <RadioButton
-          name="type"
+          name="filter-type"
           label="Доходи"
           value="income"
-          checked={filters.type === 'income'}
+          checked={filters.type === "income"}
           onChange={handleTypeChange}
         />
 
         <RadioButton
-          name="type"
+          name="filter-type"
           label="Витрати"
           value="expense"
-          checked={filters.type === 'expense'}
+          checked={filters.type === "expense"}
           onChange={handleTypeChange}
         />
       </div>
-          <button 
-            className={styles.cancelButton}
-            onClick={handleCancel}
-          >
-            Скасувати
-          </button>
-        </section>
-      );
-    }
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+        <button className={styles.cancelButton} onClick={handleReset} type="button">
+          Скасувати
+        </button>
+      </div>
+    </section>
+  );
+}
