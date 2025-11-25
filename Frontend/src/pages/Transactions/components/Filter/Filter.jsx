@@ -122,7 +122,7 @@ export default function Filter({ value = {}, onChange = () => {} }) {
         />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 12 }}>
         <button className={styles.cancelButton} onClick={handleReset} type="button">
           Скасувати
         </button>

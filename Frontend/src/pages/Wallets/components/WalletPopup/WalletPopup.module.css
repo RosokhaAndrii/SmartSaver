@@ -62,7 +62,8 @@ select {
   margin-top: 8px;
 }
 .btnCancel,
-.btnCreate {
+.btnCreate,
+.btnDelete {
   padding: 8px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -70,6 +71,19 @@ select {
   color: #fff;
   cursor: pointer;
 }
+
+.deleteGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.irreversibleNote {
+  font-size: 11px;
+  color: #ff6b6b; 
+  padding-left: 2px;
+}
+
 .btnCreate {
   background: linear-gradient(90deg, #1dd06a, #12c14d);
   color: #050505;

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CheckIcon() {
+export default function FinancialInstituionIcon() {
   return (
 <svg width="45" height="45" viewBox="0 0 72 58" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fillRule="evenodd" clipRule="evenodd" d="M6 44.7083C6 44.041 6.67157 43.5 7.5 43.5H64.5C65.3284 43.5 66 44.041 66 44.7083V51.9583C66 52.6257 65.3284 53.1667 64.5 53.1667H7.5C6.67157 53.1667 6 52.6257 6 51.9583V44.7083ZM9 45.9167V50.75H63V45.9167H9Z" fill="white"/>

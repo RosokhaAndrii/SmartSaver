@@ -1,71 +1,47 @@
-import React, { useState } from "react";
+// src/pages/Home/components/MonthNav/MonthNav.jsx
+import React from "react";
 import PropTypes from "prop-types";
 import styles from "./MonthNav.module.css";
 import ChevronLeftIcon from "../../../../assets/icons/ChevronLeftIcon.jsx";
 import ChevronRightIcon from "../../../../assets/icons/ChevronRightIcon.jsx";
 
-export default function MonthNav({ initialDate = new Date() }) {
-  const [currentDate, setCurrentDate] = useState(initialDate);
+function monthLabel(date) {
+  const monthNames = [
+    "січ", "лют", "бер", "кві", "тра", "чер",
+    "лип", "сер", "вер", "жов", "лис", "гру"
+  ];
+  return `${monthNames[date.getMonth()]}. ${date.getFullYear()}`;
+}
 
-  const getMonthLabel = (date) => {
-    const month = date.getMonth();
-    const year = date.getFullYear();
+export default function MonthNav({ month, year, onChange }) {
+  // month: 1..12
+  const current = new Date(year, month - 1, 1);
 
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-
-    const monthNames = [
-      "січ",
-      "лют",
-      "бер",
-      "кві",
-      "тра",
-      "чер",
-      "лип",
-      "сер",
-      "вер",
-      "жов",
-      "лис",
-      "гру",
-    ];
-
-    return `${monthNames[month]}. ${String(firstDay.getDate()).padStart(2, "0")}-${monthNames[month]}. ${String(lastDay.getDate()).padStart(2, "0")}`;
+  const goTo = (d) => {
+    onChange && onChange({ month: d.getMonth() + 1, year: d.getFullYear() });
   };
 
-  const goToPreviousMonth = () => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() - 1);
-      return newDate;
-    });
+  const goPrev = () => {
+    const d = new Date(current);
+    d.setMonth(d.getMonth() - 1);
+    goTo(d);
   };
 
-  const goToNextMonth = () => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() + 1);
-      return newDate;
-    });
+  const goNext = () => {
+    const d = new Date(current);
+    d.setMonth(d.getMonth() + 1);
+    goTo(d);
   };
 
   return (
     <div className={styles.monthNavigator}>
-  <button
-        className={styles.navButton}
-        onClick={goToPreviousMonth}
-        type="button"
-      >
+      <button className={styles.navButton} onClick={goPrev} type="button" aria-label="Previous month">
         <ChevronLeftIcon />
       </button>
-    
 
-      <span className={styles.monthLabel}>{getMonthLabel(currentDate)}</span>
+      <span className={styles.monthLabel}>{monthLabel(current)}</span>
 
-      <button
-        className={styles.navButton}
-        onClick={goToNextMonth}
-        type="button"
-      >
+      <button className={styles.navButton} onClick={goNext} type="button" aria-label="Next month">
         <ChevronRightIcon />
       </button>
     </div>
@@ -73,5 +49,11 @@ export default function MonthNav({ initialDate = new Date() }) {
 }
 
 MonthNav.propTypes = {
-  initialDate: PropTypes.instanceOf(Date),
+  month: PropTypes.number.isRequired, 
+  year: PropTypes.number.isRequired,
+  onChange: PropTypes.func, 
+};
+
+MonthNav.defaultProps = {
+  onChange: null,
 };

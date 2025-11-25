@@ -14,13 +14,13 @@
 .modal {
   width: 520px;
   max-width: 100%;
-  background: #0C0B0B;
+  background: #0c0b0b;
   border: 2px solid #282727;
   border-radius: 12px;
   padding: 18px;
   color: #fff;
   box-sizing: border-box;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 .header {
@@ -47,8 +47,23 @@
   padding: 6px;
   border-radius: 8px;
 }
-.closeBtn:hover { background: rgba(255,255,255,0.02); }
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.btnDelete {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
 
+.irreversibleNote {
+  font-size: 11px;
+  color: #ff6b6b;
+  padding-left: 2px;
+}
 .form {
   display: flex;
   flex-direction: column;
@@ -84,7 +99,7 @@
 .input,
 .textarea,
 select {
-  background: #0C0B0B;
+  background: #0c0b0b;
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 10px 12px;
   border-radius: 8px;
@@ -96,7 +111,7 @@ select {
 
 .input::placeholder,
 .textarea::placeholder {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .input:focus,
@@ -114,7 +129,6 @@ select:focus {
   font-size: 14px;
 }
 
-
 .radio {
   display: inline-flex;
   align-items: center;
@@ -129,7 +143,7 @@ select:focus {
 
 .hint {
   font-size: 12px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .error {
@@ -156,20 +170,31 @@ select:focus {
   font-size: 14px;
 }
 
-.cancel:hover { background: rgba(255,255,255,0.02); }
+.cancel:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
 
 .submit {
   background: linear-gradient(90deg, #1dd06a, #12c14d);
   border: none;
   color: #050505;
-  box-shadow: 0 6px 18px rgba(18,193,84,0.12);
+  box-shadow: 0 6px 18px rgba(18, 193, 84, 0.12);
 }
 
-.submit:active { transform: translateY(1px); }
+.submit:active {
+  transform: translateY(1px);
+}
 
 @media (max-width: 560px) {
-  .modal { padding: 14px; width: 100%; }
-  .rowTwo { flex-direction: column; }
+  .modal {
+    padding: 14px;
+    width: 100%;
+  }
+  .rowTwo {
+    flex-direction: column;
+  }
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}

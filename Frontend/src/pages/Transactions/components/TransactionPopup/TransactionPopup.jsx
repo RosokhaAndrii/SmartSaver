@@ -17,6 +17,15 @@ function formatDisplayDate(iso) {
   return `${dd}.${mm}.${yy}`;
 }
 
+const createInitialState = (category, walletsList) => ({
+  type: "expense",
+  amount: "", 
+  category: category ? category.id : "",
+  wallet: walletsList.length ? walletsList[0].id : "",
+  note: "",
+  date: todayIsoDate(),
+});
+
 export default function TransactionPopup({
   open,
   onClose,
@@ -24,34 +33,49 @@ export default function TransactionPopup({
   categories = [],
   wallets = [],
 }) {
-  const initialState = {
-    type: "expense",
-    amount: "",
-    category: categories.length ? categories[0].id : "",
-    wallet: wallets.length ? wallets[0].id : "",
-    note: "",
-    date: todayIsoDate(),
-  };
-  const [form, setForm] = useState(initialState);
+  const defaultExpenseCategory = categories.find((c) => c.type === "expense");
+  const initialDefaultCategory =
+    defaultExpenseCategory || (categories.length ? categories[0] : null);
+
+  const [form, setForm] = useState(
+    createInitialState(initialDefaultCategory, wallets),
+  );
   const [error, setError] = useState("");
   const mountedRef = useRef(false);
   const firstInputRef = useRef(null);
 
-  const idPrefix = useId(); 
+  const idPrefix = useId();
   const radioGroupName = `tx-type-${idPrefix}`; 
 
   const visibleCategories = categories.filter(
-    (c) => c.type === form.type || c.type === "both"
+    (c) => c.type === form.type || c.type === "both",
   );
 
   useEffect(() => {
+    const currentDefaultExpenseCategory = categories.find(
+      (c) => c.type === "expense",
+    );
+    const currentDefaultCategory =
+      currentDefaultExpenseCategory ||
+      (categories.length ? categories[0] : null);
+
     if (open) {
-      setForm({ ...initialState });
+      const defaultForm = createInitialState(currentDefaultCategory, wallets);
+      const categoryIsVisible = visibleCategories.some(
+        (c) => c.id === form.category,
+      );
+
+      setForm((prev) => ({
+        ...defaultForm,
+        category:
+          prev.category && !categoryIsVisible && categories.length
+            ? defaultForm.category
+            : defaultForm.category,
+      }));
       setError("");
       setTimeout(() => firstInputRef.current?.focus(), 20);
     }
-
-  }, [open]);
+  }, [open, wallets, categories]); 
 
   useEffect(() => {
     function onKey(e) {
@@ -69,7 +93,23 @@ export default function TransactionPopup({
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
-  }
+  } 
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    const newVisibleCategories = categories.filter(
+      (c) => c.type === newType || c.type === "both",
+    ); 
+    const newDefaultCategory = newVisibleCategories.length
+      ? newVisibleCategories[0].id
+      : "";
+
+    setForm((f) => ({
+      ...f,
+      type: newType,
+      category: newDefaultCategory,
+    }));
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -79,32 +119,29 @@ export default function TransactionPopup({
       return;
     }
 
-    const categoryLabel =
-      categories.find((c) => c.id === form.category)?.label || "Без категорії";
-    const walletLabel =
-      wallets.find((w) => w.id === form.wallet)?.label || "Без гаманця";
+    if (!form.category && visibleCategories.length > 0) {
+      setError("Виберіть категорію.");
+      return;
+    }
 
     const tx = {
       id: Date.now(),
-      title: categoryLabel,
       category: form.category,
       note: form.note,
       amount:
         form.type === "expense" ? -Math.abs(amountNum) : Math.abs(amountNum),
-      wallet: walletLabel,
+      walletId: form.wallet,
       date: formatDisplayDate(form.date),
       type: form.type,
     };
 
     onAdd(tx);
     if (mountedRef.current) {
-      setForm(initialState);
       onClose();
     }
   }
 
   if (!open) return null;
-
   return createPortal(
     <div className={styles.overlay} onMouseDown={onClose} role="presentation">
       <div
@@ -128,13 +165,12 @@ export default function TransactionPopup({
         <form className={styles.form} onSubmit={handleSubmit}>
           <fieldset className={styles.row}>
             <legend className={styles.label}>Тип</legend>
-
             <div className={styles.radioRow}>
               <RadioButton
                 name={radioGroupName}
                 value="expense"
                 checked={form.type === "expense"}
-                onChange={(e) => setForm(f => ({ ...f, type: e.target.value }))}
+                onChange={handleTypeChange}
                 label="Витрата"
               />
 
@@ -142,7 +178,7 @@ export default function TransactionPopup({
                 name={radioGroupName}
                 value="income"
                 checked={form.type === "income"}
-                onChange={(e) => setForm(f => ({ ...f, type: e.target.value }))}
+                onChange={handleTypeChange}
                 label="Дохід"
               />
             </div>
@@ -150,6 +186,7 @@ export default function TransactionPopup({
 
           <div className={styles.row}>
             <label className={styles.label}>Сума</label>
+
             <input
               ref={firstInputRef}
               name="amount"
@@ -163,22 +200,36 @@ export default function TransactionPopup({
 
           <div className={styles.row}>
             <label className={styles.label}>Категорія</label>
+
             <select
               name="category"
               value={form.category}
               onChange={handleChange}
               className={styles.input}
             >
+              {/* ДОДАЄМО ВИДИМУ ОПЦІЮ ЗА ЗАМОВЧУВАННЯМ, ЯКЩО ID НЕ ВИЗНАЧЕНИЙ */}
+              {!form.category && visibleCategories.length > 0 && (
+                <option value="" disabled hidden>
+                  Виберіть категорію
+                </option>
+              )}
+
               {visibleCategories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.label}
                 </option>
               ))}
+              {visibleCategories.length === 0 && (
+                <option value="" disabled>
+                  Немає категорій
+                </option>
+              )}
             </select>
           </div>
 
           <div className={styles.row}>
             <label className={styles.label}>Гаманець</label>
+
             <select
               name="wallet"
               value={form.wallet}
@@ -195,6 +246,7 @@ export default function TransactionPopup({
 
           <div className={styles.row}>
             <label className={styles.label}>Дата</label>
+
             <input
               name="date"
               type="date"
@@ -206,6 +258,7 @@ export default function TransactionPopup({
 
           <div className={styles.row}>
             <label className={styles.label}>Нотатка</label>
+
             <textarea
               name="note"
               className={styles.textarea}
@@ -214,13 +267,13 @@ export default function TransactionPopup({
               placeholder="Короткий опис..."
             />
           </div>
-
           {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.actions}>
             <button type="button" className={styles.cancel} onClick={onClose}>
               Скасувати
             </button>
+
             <button type="submit" className={styles.submit}>
               Додати
             </button>
@@ -228,7 +281,7 @@ export default function TransactionPopup({
         </form>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 

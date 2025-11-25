@@ -1,7 +1,7 @@
 .monthNavigator {
   display: inline-flex;
   align-items: center;
-  background-color: #1a1a1a; 
+  background-color: #0C0B0B;
   border-radius: 20px; 
   padding: 0; 
   overflow: hidden; 
@@ -13,7 +13,7 @@
   width: 38px; 
   height: 38px;
   border: none;
-  background-color: #2e2e2e; 
+  background-color: #0C0B0B;
   color: #f0f0f0;
   display: inline-flex;
   align-items: center;
@@ -43,5 +43,6 @@
   min-width: 140px; 
   text-align: center;
   padding: 8px 10px; 
-  background-color: #1a1a1a; 
+  background-color: #0C0B0B;
+
 }
