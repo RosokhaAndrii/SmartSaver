@@ -1,122 +1,333 @@
-import React from 'react';
-import usePageTitle from '../../hooks/usePageTitle/usePageTitle';
-import GoalCard from './components/GoalCard/GoalCard';
-import AutoSavings from './components/AutoSavings/AutoSavings';
-import AddGoal from './components/AddGoal/AddGoal';
-import AddRule from './components/AddRule/AddRule';
-import GoalPopup from './components/GoalsPopup/GoalPopup';
-import AutoRulePopup from './components/AutoRulePopup/AutoRulePopup';
-import styles from './Goals.module.css';
-
-const initialGoals = [
-  {
-    id: 'g1',
-    title: 'Відпустка',
-    subtitle: 'Подорожі',
-    current: 2500,
-    target: 3500,
-    walletLabel: 'vac',
-    deadline: '2025-12-31',
-    checked: false,
-  },
-  {
-    id: 'g2',
-    title: 'Нова камера',
-    subtitle: 'Техніка',
-    current: 800,
-    target: 1200,
-    walletLabel: 'abank',
-    deadline: '2026-02-15',
-    checked: false,
-  },
-];
-
-const walletsMock = [
-  { id: 'cash', label: 'Готівка' },
-  { id: 'abank', label: 'Картка Абанк' },
-  { id: 'monobank', label: 'Картка Monobank' },
-  { id: 'vac', label: 'Відпустка' },
-];
+import React, { useEffect, useState, useCallback } from "react";
+import usePageTitle from "../../hooks/usePageTitle/usePageTitle";
+import GoalCard from "./components/GoalCard/GoalCard";
+import AutoSavings from "./components/AutoSavings/AutoSavings";
+import AddGoal from "./components/AddGoal/AddGoal";
+import AddRule from "./components/AddRule/AddRule";
+import GoalPopup from "./components/GoalsPopup/GoalPopup";
+import AutoRulePopup from "./components/AutoRulePopup/AutoRulePopup";
+import styles from "./Goals.module.css";
+import { useAuth } from "../../hooks/useAuth/useAuth";
 
 export default function Goals() {
-  usePageTitle('Цілі');
+  usePageTitle("Цілі");
+  const { authFetch } = useAuth();
 
-  const [goals, setGoals] = React.useState(initialGoals);
-  // rules state
-  const [rules, setRules] = React.useState([
-    // приклад
-    {
-      id: 'r1',
-      title: 'Заощадження 20% з Готівки',
-      percent: 20,
-      sourceWalletId: 'cash',
-      targetWalletId: 'vac',
-      isActive: true,
-    },
-  ]);
+  const [goals, setGoals] = useState([]);
+  const [wallets, setWallets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [goalPopupOpen, setGoalPopupOpen] = React.useState(false);
-  const [editingGoal, setEditingGoal] = React.useState(null);
+  const [rules, setRules] = useState([]);
+  const [rulesLoading, setRulesLoading] = useState(true);
 
-  const [rulePopupOpen, setRulePopupOpen] = React.useState(false);
-  const [editingRule, setEditingRule] = React.useState(null);
+  const [goalPopupOpen, setGoalPopupOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState(null);
 
-  // GOAL handlers
-  function handleCreateGoal() { setEditingGoal(null); setGoalPopupOpen(true); }
-  function handleSaveGoal(goal) {
-    if (!goal.id) setGoals(prev => [{ ...goal, id: Date.now().toString() }, ...prev]);
-    else setGoals(prev => prev.map(g => g.id === goal.id ? { ...g, ...goal } : g));
+  const [rulePopupOpen, setRulePopupOpen] = useState(false);
+  const [editingRule, setEditingRule] = useState(null);
+
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const walletsRes = await authFetch("http://localhost:8080/api/wallets");
+      if (!walletsRes.ok) throw new Error("Failed to load wallets");
+      const walletsData = await walletsRes.json();
+      const formattedWallets = walletsData.map((w) => ({
+        id: w.id.toString(),
+        label: w.name,
+        currency: w.currency,
+        balance: Number(w.balance),
+      }));
+      setWallets(formattedWallets);
+
+      const walletBalanceMap = formattedWallets.reduce((acc, wallet) => {
+        acc[wallet.id] = wallet.balance;
+        return acc;
+      }, {});
+
+      const goalsRes = await authFetch("http://localhost:8080/api/goals");
+      if (!goalsRes.ok) throw new Error("Не вдалося завантажити цілі");
+      const goalsData = await goalsRes.json();
+
+      const formattedGoals = goalsData.map((g) => {
+        const targetWalletIdStr = g.wallet_id.toString();
+        const currentProgress = walletBalanceMap[targetWalletIdStr] || 0;
+
+        return {
+          id: g.id.toString(),
+          title: g.title,
+          subtitle: g.subtitle || g.note || "",
+          note: g.note || "",
+          current: currentProgress,
+          target: Number(g.target_amount),
+          walletId: targetWalletIdStr,
+          walletLabel: g.wallet_name,
+          deadline: g.due_date,
+          checked: currentProgress >= Number(g.target_amount),
+        };
+      });
+
+      setGoals(formattedGoals);
+    } catch (error) {
+      console.error("Failed to load goals data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [authFetch]);
+
+  const loadRules = useCallback(async () => {
+    try {
+      setRulesLoading(true);
+      const res = await authFetch("http://localhost:8080/api/auto-rules");
+      if (!res.ok) throw new Error("Failed to load rules");
+      const data = await res.json();
+      const normalized = data.map((r) => ({
+        id: String(r.id),
+        title: r.title,
+        percent: Number(r.percent),
+        sourceWalletId: String(r.source_wallet_id),
+        targetWalletId: String(r.target_wallet_id),
+        isActive: !!r.is_active,
+        scheduleCron: r.schedule_cron,
+        lastRun: r.last_run,
+        sourceWalletName: r.source_wallet_name,
+        targetWalletName: r.target_wallet_name,
+      }));
+      setRules(normalized);
+    } catch (err) {
+      console.error("Failed to load rules:", err);
+    } finally {
+      setRulesLoading(false);
+    }
+  }, [authFetch]);
+
+  useEffect(() => {
+    loadData();
+    loadRules();
+  }, [loadData, loadRules]);
+
+  function handleCreateGoal() {
+    setEditingGoal(null);
+    setGoalPopupOpen(true);
   }
+
+  async function handleSaveGoal(goal) {
+    const walletIdNum = Number(goal.walletId);
+    const targetAmountNum = Number(goal.target);
+    if (walletIdNum <= 0 || targetAmountNum <= 0) {
+      throw new Error(
+        "Missing required fields or invalid values: wallet_id, title, target_amount must be positive numbers."
+      );
+    }
+
+    const apiGoal = {
+      wallet_id: walletIdNum,
+      title: goal.title,
+      target_amount: targetAmountNum,
+      due_date: goal.deadline || null,
+      saved_amount: 0,
+      subtitle: goal.subtitle || "",
+      note: goal.note || "",
+    };
+
+    try {
+      if (!goal.id) {
+        const res = await authFetch("http://localhost:8080/api/goals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(apiGoal),
+        });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Не вдалося створити ціль");
+        }
+      } else {
+        const res = await authFetch(`http://localhost:8080/api/goals/${goal.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(apiGoal),
+        });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Failed to update goal");
+        }
+      }
+
+      await loadData();
+      setGoalPopupOpen(false);
+      setEditingGoal(null);
+    } catch (err) {
+      console.error("Error saving goal:", err);
+      throw err;
+    }
+  }
+
   function handleEditGoal(id) {
-    const g = goals.find(x => x.id === id);
+    const g = goals.find((x) => x.id === id);
     setEditingGoal(g || null);
     setGoalPopupOpen(true);
   }
 
-  // RULE handlers
-  function handleCreateRule() { setEditingRule(null); setRulePopupOpen(true); }
-  function handleSaveRule(rule) {
-    if (!rule.id) {
-      setRules(prev => [{ ...rule, id: Date.now().toString() }, ...prev]);
-    } else {
-      setRules(prev => prev.map(r => (r.id === rule.id ? { ...r, ...rule } : r)));
+  async function handleDeleteGoal(goalId) {
+    try {
+      const res = await authFetch(`http://localhost:8080/api/goals/${goalId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Не вдалося видалити ціль. Статус: ${res.status}`);
+      }
+      await loadData();
+      setGoalPopupOpen(false);
+      setEditingGoal(null);
+    } catch (err) {
+      console.error("Помилка при видаленні цілі:", err);
+      alert(`Помилка при видаленні цілі: ${err.message}`);
     }
   }
-  function handleEditRule(id) {
-    const r = rules.find(x => x.id === id);
+
+  function handleCreateRule() {
+    setEditingRule(null);
+    setRulePopupOpen(true);
+  }
+
+  async function handleSaveRule(rule) {
+    const payload = {
+      title: rule.title,
+      percent: Number(rule.percent),
+      source_wallet_id: Number(rule.sourceWalletId),
+      target_wallet_id: Number(rule.targetWalletId),
+      is_active: rule.isActive ? 1 : 0,
+      schedule_cron: rule.scheduleCron ?? null,
+    };
+ console.log("handleSaveRule payload:", payload);
+    try {
+      if (!rule.id) {
+        const res = await authFetch("http://localhost:8080/api/auto-rules", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to create rule");
+        }
+      } else {
+        const res = await authFetch(`http://localhost:8080/api/auto-rules/${rule.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to update rule");
+        }
+      }
+      await loadRules();
+    } catch (err) {
+      console.error("handleSaveRule error:", err);
+      throw err;
+    }
+  }
+
+  async function handleEditRule(id) {
+    const r = rules.find((x) => x.id === id);
     setEditingRule(r || null);
     setRulePopupOpen(true);
   }
-  function handleToggleRule(id) {
-    setRules(prev => prev.map(r => r.id === id ? { ...r, isActive: !r.isActive } : r));
-  }
-  function handleRemoveRule(id) {
-    setRules(prev => prev.filter(r => r.id !== id));
+
+  async function handleDeleteRule(ruleId) {
+    if (!window.confirm("Видалити це правило?")) return;
+    try {
+      const res = await authFetch(`http://localhost:8080/api/auto-rules/${ruleId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Failed to delete rule (${res.status})`);
+      }
+      await loadRules();
+    } catch (err) {
+      console.error("Failed to delete rule:", err);
+      alert(err.message || "Помилка при видаленні правила");
+    }
   }
 
-  // For display: days left calc
+  async function toggleRuleActive(ruleId, currentActive) {
+    try {
+      const res = await authFetch(`http://localhost:8080/api/auto-rules/${ruleId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_active: currentActive ? 0 : 1 }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to toggle rule");
+      }
+      await loadRules();
+    } catch (err) {
+      console.error("toggleRuleActive error:", err);
+      alert(err.message || "Не вдалося змінити стан правила");
+    }
+  }
+
+  async function runRuleNow(ruleId) {
+    try {
+      const res = await authFetch(`http://localhost:8080/api/auto-rules/${ruleId}/run`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to run rule");
+      }
+      const data = await res.json();
+      if (data.executed) {
+        alert(`Правило виконано: ${data.amount}`);
+        // оновлюємо гаманці й правила
+        await Promise.all([loadData(), loadRules()]);
+      } else {
+        alert(`Правило не виконано: ${data.reason || "не відомо чому"}`);
+      }
+    } catch (err) {
+      console.error("runRuleNow error:", err);
+      alert(err.message || "Помилка при запуску правила");
+    }
+  }
+
+
   function calcDaysLeft(deadlineIso) {
     if (!deadlineIso) return undefined;
-    const d = new Date(deadlineIso + 'T23:59:59');
+    const d = new Date(deadlineIso + "T23:59:59");
     const now = new Date();
     const diffMs = d - now;
-    if (diffMs < 0) return '0 днів';
+    if (diffMs < 0) return "0 днів";
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     return `${days} днів`;
   }
 
-  // --- Приклад застосування правила коли додається транзакція ---
-  // ПРИМІТКА: реальна інтеграція залежить від структури твого transactions store.
+  const displayedGoals = goals.map((g) => ({
+    ...g,
+    daysLeft: calcDaysLeft(g.deadline),
+  }));
 
+  const getWalletLabel = useCallback((id) => wallets.find((w) => w.id === id)?.label || id, [wallets]);
 
-  const displayedGoals = goals.map(g => ({ ...g, daysLeft: calcDaysLeft(g.deadline) }));
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <p>Завантаження даних...</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className={styles.page}>
         <main className={styles.main}>
           <div className={styles.content}>
-            {/* GOALS */}
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Цілі</div>
@@ -126,14 +337,14 @@ export default function Goals() {
               </div>
 
               <div className={styles.cardsGrid}>
-                {displayedGoals.map(g => (
+                {displayedGoals.map((g) => (
                   <GoalCard
                     key={g.id}
                     title={g.title}
                     subtitle={g.subtitle}
                     current={g.current}
                     target={g.target}
-                    walletLabel={walletsMock.find(w=>w.id===g.walletLabel)?.label || g.walletLabel}
+                    walletLabel={g.walletLabel}
                     daysLeft={g.daysLeft}
                     checked={g.checked}
                     onEdit={() => handleEditGoal(g.id)}
@@ -142,7 +353,6 @@ export default function Goals() {
               </div>
             </section>
 
-            {/* AUTOSAVINGS */}
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Автозаощадження</div>
@@ -152,43 +362,58 @@ export default function Goals() {
               </div>
 
               <div className={styles.cardsGrid}>
-                {rules.map(r => (
-                  <AutoSavings
-                    key={r.id}
-                    id={r.id}
-                    title={r.title}
-                    subtitle={`${r.percent}% з ${walletsMock.find(w=>w.id===r.sourceWalletId)?.label || r.sourceWalletId} → ${walletsMock.find(w=>w.id===r.targetWalletId)?.label || r.targetWalletId}`}
-                    lines={[
-                      `Відсоток: ${r.percent}%`,
-                      `З гаманця: ${walletsMock.find(w=>w.id===r.sourceWalletId)?.label || r.sourceWalletId}`,
-                      `Надходить до: ${walletsMock.find(w=>w.id===r.targetWalletId)?.label || r.targetWalletId}`,
-                    ]}
-                    isActive={!!r.isActive}
-                    onToggle={() => handleToggleRule(r.id)}
-                    onEdit={() => handleEditRule(r.id)}
-                  />
-                ))}
+                {rulesLoading ? (
+                  <div>Завантаження правил...</div>
+                ) : rules.length === 0 ? (
+                  <div>Правил немає</div>
+                ) : (
+                  rules.map((r) => (
+                    <AutoSavings
+                      key={r.id}
+                      id={r.id}
+                      title={r.title}
+                      subtitle={`${r.percent}% з ${getWalletLabel(r.sourceWalletId)} → ${getWalletLabel(r.targetWalletId)}`}
+                      lines={[
+                        `Відсоток: ${r.percent}%`,
+                        `З гаманця: ${getWalletLabel(r.sourceWalletId)}`,
+                        `Куди: ${getWalletLabel(r.targetWalletId)}`,
+                      ]}
+                      isActive={!!r.isActive}
+                      onToggle={() => toggleRuleActive(r.id, r.isActive)}
+                      onEdit={() => handleEditRule(r.id)}
+                      onRun={() => runRuleNow(r.id)}      
+                      onDelete={() => handleDeleteRule(r.id)} 
+                    />
+                  ))
+                )}
               </div>
             </section>
           </div>
         </main>
       </div>
 
-      {/* POPUPS */}
       <GoalPopup
         open={goalPopupOpen}
-        onClose={() => { setGoalPopupOpen(false); setEditingGoal(null); }}
+        onClose={() => {
+          setGoalPopupOpen(false);
+          setEditingGoal(null);
+        }}
         onSave={handleSaveGoal}
+        onDelete={handleDeleteGoal}
         initialGoal={editingGoal}
-        wallets={walletsMock}
+        wallets={wallets}
       />
 
       <AutoRulePopup
         open={rulePopupOpen}
-        onClose={() => { setRulePopupOpen(false); setEditingRule(null); }}
-        onSave={handleSaveRule}
+        onClose={() => {
+          setRulePopupOpen(false);
+          setEditingRule(null);
+        }}
+        onSave={handleSaveRule} 
         initialRule={editingRule}
-        wallets={walletsMock}
+        wallets={wallets}
+        onDelete={handleDeleteRule}
       />
     </>
   );

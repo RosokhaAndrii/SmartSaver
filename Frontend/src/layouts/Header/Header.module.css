@@ -52,11 +52,29 @@
   border: none;
   background: transparent;
   position: absolute;
-  left:1200px;
-  top:20px;
+  right: 300px; 
+  top: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   cursor: pointer;
+}
+
+.logoutBtn {
+  position: absolute;
+  top:22px;
+  right:400px;
+   background-color: #0C0B0B; 
+    color: white; 
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logoutBtn:hover {
+  background-color: hsl(0, 0%, 18%);
 }

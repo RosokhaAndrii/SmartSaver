@@ -1,44 +1,79 @@
-import React, { createContext,  useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { createContext, useCallback, useState, useEffect } from "react";
+
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('token'));
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) localStorage.setItem('token', token);
-    else localStorage.removeItem('token');
-  }, [token]);
+    let mounted = true;
+    async function run() {
+      if (accessToken) {
+        await verifyToken(accessToken);
+      } else {
+        if (mounted) setLoading(false);
+      }
+    }
+    run();
+    return () => { mounted = false; };
+  }, [accessToken]); 
 
-  const login = async (credentials) => {
-    const res = await fetch('Тут могло би бути ваше api', {
+  const verifyToken = async (token) => {
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const u = await res.json();
+        setUser(u);
+      } else {
+        setAccessToken(null);
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    } catch (err) {
+      console.error('Token verify error:', err);
+      setAccessToken(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email, password) => {
+    const res = await fetch('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify({ email, password })
     });
-    if (!res.ok) throw new Error('Login failed');
-    const payload = await res.json();
-    setToken(payload.token);
-    setUser(payload.user ?? null);
-    return payload;
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Login failed');
+    }
+    const { accessToken: at, user: u } = await res.json();
+    setAccessToken(at);
+    localStorage.setItem('token', at);
+    setUser(u);
+    return { at, u };
   };
 
   const logout = () => {
-    setToken(null);
+    setAccessToken(null);
     setUser(null);
+    localStorage.removeItem('token');
   };
 
-  const authFetch = (input, init = {}) => {
-    const headers = { ...(init.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  const authFetch = useCallback((input, init = {}) => {
+    const headers = new Headers(init.headers || {});
+    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
     return fetch(input, { ...init, headers });
-  };
-  
-  return <AuthContext.Provider value={{ token, user, login, logout, authFetch }}>{children}</AuthContext.Provider>;
-}
+  }, [accessToken]);
 
-
-
-AuthProvider.propTypes = {
-    children: PropTypes.node
+  return (
+    <AuthContext.Provider value={{ accessToken, user, loading, login, logout, authFetch }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

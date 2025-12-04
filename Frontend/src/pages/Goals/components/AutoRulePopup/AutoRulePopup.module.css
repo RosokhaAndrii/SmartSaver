@@ -128,6 +128,23 @@ select {
   transform: rotate(40deg);
 }
 
+.btnDelete {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.irreversibleNote {
+  font-size: 11px;
+  color: #ff6b6b; 
+  padding-left: 2px;
+}
+
+
+
 .input:focus,
 .textarea:focus,
 select:focus {
