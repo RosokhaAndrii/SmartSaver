@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 export default function BalanceChart({ currentBalance, date, changePercentage, data = [] }) {
   const chartData = (data && data.length) ? data.map(d => ({
-    date: d.date.slice(8) + '.' + d.date.slice(5,7), // 'DD.MM' (simple)
+    date: d.date.slice(8) + '.' + d.date.slice(5,7), 
     balance: Number(d.balance)
   })) : [];
 

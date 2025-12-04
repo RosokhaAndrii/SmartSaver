@@ -19,8 +19,6 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/register" element={<Registration />} />
-
-          {/* Головний контейнер — App (з Header + SideBar) — має дочірні маршрути */}
           <Route path="/" element={
             <ProtectedRoute>
               <App />

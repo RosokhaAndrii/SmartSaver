@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS smart_saver;
 CREATE DATABASE smart_saver CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE smart_saver;
 

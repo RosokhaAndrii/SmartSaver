@@ -1,0 +1,11 @@
+{
+  "all": true,
+  "include": ["src/**/*.{js,jsx,ts,tsx}"],
+  "exclude": [
+    "**/*.spec.{js,jsx,ts,tsx}",
+    "**/*.cy.{js,jsx,ts,tsx}",
+    "src/index.{js,jsx,ts,tsx}"
+  ],
+  "reporter": ["html", "json", "text"],
+  "report-dir": "coverage"
+}

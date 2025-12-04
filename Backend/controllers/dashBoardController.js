@@ -66,15 +66,11 @@ export async function getDashboard(req, res) {
     const spendingsByCategory = spendings.map(s => ({
       name: s.name,
       value: Math.abs(Number(s.total || 0)),
-      // optional: color can be added on frontend
     }));
 
-    // ---------- BALANCE HISTORY FROM START OF MONTH ----------
-    // We'll compute daily nets from start..today (or end if end < today)
     const todayStr = isoDate(new Date());
-    const periodEnd = end > todayStr ? todayStr : end; // cap to today if user asked future month
+    const periodEnd = end > todayStr ? todayStr : end; 
 
-    // get daily nets for dates in [start, periodEnd]
     const dailyNets = await query(
       `SELECT DATE(t.date) AS date, SUM(t.amount) AS net
        FROM transactions t
@@ -84,7 +80,6 @@ export async function getDashboard(req, res) {
       [userId, start, periodEnd]
     );
 
-    // map date => net
     const netByDate = {};
     let sumNetsFromStartToToday = 0;
     for (const r of dailyNets) {
@@ -94,11 +89,8 @@ export async function getDashboard(req, res) {
       sumNetsFromStartToToday += netVal;
     }
 
-    // balance at start of period = current total_balance - sum(nets from start..today)
-    // (припущення: wallets.balance вже враховує всі транзакції)
     const balanceAtStart = Math.round((Number(total_balance) - sumNetsFromStartToToday) * 100) / 100;
 
-    // build dates list from start..periodEnd (inclusive)
     const startDate = new Date(start);
     const endDate = new Date(periodEnd);
     const dates = [];
@@ -106,7 +98,6 @@ export async function getDashboard(req, res) {
       dates.push(isoDate(new Date(d)));
     }
 
-    // build cumulative balance: start balance + cumulative nets up to each day (inclusive)
     const balance_history = [];
     let cumulative = 0;
     for (const date of dates) {
@@ -116,7 +107,6 @@ export async function getDashboard(req, res) {
       balance_history.push({ date, balance: bal, net });
     }
 
-    // If the requested end is after today, include future dates with null/unchanged balance (optional)
     if (end > periodEnd) {
       const futureDates = [];
       const futureStart = new Date(periodEnd);
@@ -130,7 +120,6 @@ export async function getDashboard(req, res) {
       }
     }
 
-    // ---------- response ----------
     res.json({
       wallets,
       total_balance: Math.round(total_balance * 100) / 100,

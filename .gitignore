@@ -3,4 +3,5 @@ node_modules/
 Frontend/node_modules/
 Backend/node_modules/
 Tests/node_modules/
+Frontend/instrumented/
 .env

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Card from './components/Card/Card';
+import Card from "./components/Card/Card.jsx";
 import SpendingPieChart from "./components/SpendingPieChart/SpendingPieChart";
 import BalanceChart from "./components/BalanceChart/BalanceChart";
-import MonthNav from "./components/MonthNav/MonthNav";
+import MonthNav from "./components/MonthNav/MonthNav.jsx";
 import styles from './Home.module.css';
 import PaymentIcon from '../../assets/icons/PaymentIcon.jsx';
 import FinancialInstituionIcon from '../../assets/icons/FinancialnstituionIcon.jsx';

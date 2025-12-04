@@ -48,7 +48,7 @@ export async function login(req, res) {
 }
 
 export async function me(req, res) {
-  const userId = req.userId; // set by middleware
+  const userId = req.userId; 
   try {
     const rows = await query('SELECT id, name, email FROM users WHERE id = ?', [userId]);
     const user = rows[0];
