@@ -1,0 +1,15 @@
+{
+  "monthly_income": 5000,
+  "monthly_expense": 1200,
+  "total_balance": 3250,
+  "goals": { "completed": 2, "total": 5 },
+  "spendings_by_category": [
+    { "category": "Food", "amount": 400 },
+    { "category": "Transport", "amount": 200 }
+  ],
+  "period": { "end": "2025-12-31" },
+  "balance_history": [
+    { "date": "2025-11-01", "balance": 3000 },
+    { "date": "2025-12-01", "balance": 3250 }
+  ]
+}

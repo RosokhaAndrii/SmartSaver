@@ -1,0 +1,18 @@
+[
+  {
+    "id": 10,
+    "name": "Main",
+    "type": "bank",
+    "balance": 3000,
+    "currency": "USD",
+    "hidden": false
+  },
+  {
+    "id": 11,
+    "name": "Savings",
+    "type": "savings",
+    "balance": 3250,
+    "currency": "USD",
+    "hidden": false
+  }
+]

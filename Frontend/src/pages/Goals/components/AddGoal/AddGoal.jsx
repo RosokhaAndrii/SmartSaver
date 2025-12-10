@@ -5,7 +5,7 @@ import styles from './AddGoal.module.css';
 
 export default function AddGoal({ onClick }) {
   return (
-    <button type="button" className={styles.addButton} onClick={onClick}>
+    <button data-cy="add-goal" type="button" className={styles.addButton} onClick={onClick}>
       <span className={styles.icon}><AddIcon /></span>
       <p className={styles.title}>Додати ціль</p>
     </button>

@@ -42,17 +42,18 @@ export default function Registration() {
   }
 
   return (
-    <div className={styles.Container}>
-      <div className={styles.Logo}>
+    <div className={styles.Container} data-cy="reg-page">
+      <div className={styles.Logo} data-cy="reg-logo">
         <span className={styles.Icon}><FinancialInstituionIcon /></span>
         <h1>SmartSaver</h1>
       </div>
 
       <div className={styles.authContainer}>
-        <form className={styles.Form} onSubmit={handleSubmit}>
+        <form className={styles.Form} onSubmit={handleSubmit} data-cy="reg-form">
           <label htmlFor="name" className={styles.Label}>Ім&apos;я</label>
           <input
             id="name"
+            data-cy="reg-name"
             type="text"
             className={styles.Input}
             placeholder="Ім'я"
@@ -63,6 +64,7 @@ export default function Registration() {
           <label htmlFor="email" className={styles.Label}>Уведіть електронну пошту</label>
           <input
             id="email"
+            data-cy="reg-email"
             type="email"
             className={styles.Input}
             placeholder="Електронна пошта"
@@ -73,6 +75,7 @@ export default function Registration() {
           <label htmlFor="password" className={styles.Label}>Уведіть пароль</label>
           <input
             id="password"
+            data-cy="reg-password"
             type="password"
             className={styles.Input}
             placeholder="Пароль"
@@ -80,16 +83,16 @@ export default function Registration() {
             onChange={e => setPassword(e.target.value)}
           />
 
-          {error && <div className={styles.error}>{error}</div>}
+          {error && <div className={styles.error} data-cy="reg-error">{error}</div>}
 
-          <button className={styles.Button} type="submit" disabled={loading}>
+          <button className={styles.Button} type="submit" disabled={loading} data-cy="reg-submit">
             {loading ? 'Зачекайте...' : 'Зареєструватися'}
           </button>
         </form>
       </div>
 
       <div className={styles.link}>
-        <p>Уже маєте акаунт? <Link to="/auth">Увійдіть!</Link></p>
+        <p>Уже маєте акаунт? <Link to="/auth" data-cy="reg-login-link">Увійдіть!</Link></p>
       </div>
     </div>
   );

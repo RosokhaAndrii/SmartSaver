@@ -35,7 +35,8 @@ export default function Auth() {
       <div className={styles.authContainer}>
         <form className={styles.Form} onSubmit={handleSubmit}>
           <label htmlFor="email" className={styles.Label}>Електронна пошта</label>
-          <input
+          <input 
+          data-cy="email"
             id="email"
             type="email"
             className={styles.Input}
@@ -46,6 +47,7 @@ export default function Auth() {
 
           <label htmlFor="password" className={styles.Label}>Пароль</label>
           <input
+          data-cy="password"
             id="password"
             type="password"
             className={styles.Input}
@@ -53,8 +55,8 @@ export default function Auth() {
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-          {error && <div className={styles.error}>{error}</div>}
-          <button type='submit' className={styles.Button}>Увійти</button>
+          {error && <div data-cy="login-error" className={styles.error}>{error}</div>}
+          <button data-cy="login-button" type='submit' className={styles.Button}>Увійти</button>
         </form>
       </div>
 

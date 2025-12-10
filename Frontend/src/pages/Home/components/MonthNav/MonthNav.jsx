@@ -33,13 +33,13 @@ export default function MonthNav({ month, year, onChange }) {
 
   return (
     <div className={styles.monthNavigator}>
-      <button className={styles.navButton} onClick={goPrev} type="button" aria-label="Previous month">
+      <button className={styles.navButton} data-cy="month-prev" onClick={goPrev} type="button" aria-label="Previous month">
         <ChevronLeftIcon />
       </button>
 
       <span className={styles.monthLabel}>{monthLabel(current)}</span>
 
-      <button className={styles.navButton} onClick={goNext} type="button" aria-label="Next month">
+      <button className={styles.navButton} data-cy="month-next" onClick={goNext} type="button" aria-label="Next month">
         <ChevronRightIcon />
       </button>
     </div>

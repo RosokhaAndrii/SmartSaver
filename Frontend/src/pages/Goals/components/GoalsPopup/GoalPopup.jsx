@@ -254,6 +254,7 @@ export default function GoalPopup({
               {form.id && (
                 <>
                   <button
+                      data-cy="goal-delete"
                     type="button"
                     className={styles.btnDelete}
                     onClick={handleDelete}

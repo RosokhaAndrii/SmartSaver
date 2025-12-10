@@ -1,0 +1,24 @@
+[
+  {
+    "id": 10,
+    "title": "New Laptop",
+    "subtitle": "Work machine",
+    "note": "Prefer lightweight model",
+    "wallet_id": 1,
+    "wallet_name": "Main",
+    "target_amount": 2000,
+    "due_date": "2025-12-31",
+    "saved_amount": 300
+  },
+  {
+    "id": 11,
+    "title": "Summer Vacation",
+    "subtitle": "Trip to the sea",
+    "note": "",
+    "wallet_id": 2,
+    "wallet_name": "Savings",
+    "target_amount": 1500,
+    "due_date": "2026-06-30",
+    "saved_amount": 250
+  }
+]

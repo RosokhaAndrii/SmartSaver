@@ -187,12 +187,12 @@ export default function AutoRulePopup({
           {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.actions} style={{ alignItems: 'center', gap: 12 }}>
-            {/* Ліва група: Delete (тільки якщо редагування існуючого правила) */}
             {form.id ? (
               <div className={styles.deleteGroup}>
                 <button
                   type="button"
                   className={styles.btnDelete}
+                  data-cy="rule-delete"
                   onClick={handleDeleteClick}
                   disabled={busy}
                 >
@@ -202,10 +202,9 @@ export default function AutoRulePopup({
               </div>
             ) : <div />}
 
-            {/* Права група: cancel + submit */}
             <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
               <button type="button" className={styles.cancel} onClick={onClose} disabled={busy}>Скасувати</button>
-              <button type="submit" className={styles.submit} disabled={busy}>{form.id ? 'Зберегти' : 'Створити'}</button>
+              <button data-cy="rule-submit" type="submit" className={styles.submit} disabled={busy}>{form.id ? 'Зберегти' : 'Створити'}</button>
             </div>
           </div>
         </form>

@@ -23,16 +23,17 @@ export default function GoalCard({
   onEdit,
   checked,
   className,
+  dataCy
 }) {
   const percent = target ? (current / target) * 100 : 0;
   const pct = Math.round(percent * 10) / 10;
   const progress = clamp01(current / (target || 1));
 
   return (
-    <article className={`${styles.card} ${className || ""}`} aria-labelledby={`goal-${title}`}>
+    <article data-cy={dataCy} className={`${styles.card} ${className || ""}`} aria-labelledby={`goal-${title}`}>
       <header className={styles.header}>
         <div>
-          <h3 id={`goal-${title}`} className={styles.title}>{title}</h3>
+          <h3 id={`goal-${title}`} data-cy="goal-title" className={styles.title}>{title}</h3>
           {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
         </div>
 
@@ -45,13 +46,12 @@ export default function GoalCard({
 
       <div className={styles.progressBlock}>
         <div className={styles.amounts}>
-          <span className={styles.current}>{formatAmount(current)}</span>
-          <span className={styles.target}>{formatAmount(target)}</span>
+          <span data-cy="goal-current" className={styles.current}>{formatAmount(current)}</span>
+          <span data-cy="goal-target" className={styles.target}>{formatAmount(target)}</span>
         </div>
 
         <div className={styles.progressWrap} aria-hidden>
           <div className={styles.track}>
-            {/* .filled ширина змінюється — transition в css */}
             <div
               className={styles.filled}
               style={{ width: `${progress * 100}%` }}
@@ -67,7 +67,7 @@ export default function GoalCard({
 
       <div className={styles.meta}>
         {walletLabel && (
-          <div className={styles.metaRow}><span className={styles.metaLabel}>Прив&apos;язано до гаманця:</span> {walletLabel}</div>
+          <div data-cy="goal-wallet" className={styles.metaRow}><span className={styles.metaLabel}>Прив&apos;язано до гаманця:</span> {walletLabel}</div>
         )}
         {typeof daysLeft !== "undefined" && (
           <div className={styles.metaRow}><span className={styles.metaLabel}>Залишилось:</span> {daysLeft}</div>
@@ -76,6 +76,7 @@ export default function GoalCard({
 
       <div className={styles.actions}>
         <button
+          data-cy="goal-edit"
           type="button"
           className={styles.editBtn}
           onClick={onEdit}

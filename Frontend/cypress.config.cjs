@@ -15,5 +15,6 @@ module.exports = defineConfig({
       return config;
     },
     supportFile: 'cypress/support/e2e.js',
+      baseUrl: 'http://localhost:5173'
   },
 });

@@ -89,7 +89,6 @@
   gap: 8px;
 }
 
-/* labels & inputs */
 .label {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.8);
@@ -121,7 +120,6 @@ select:focus {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* textarea */
 .textarea {
   min-height: 80px;
   resize: vertical;

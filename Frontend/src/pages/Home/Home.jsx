@@ -50,12 +50,13 @@ export default function Home() {
   const goalsValue = `${dashboard?.goals?.completed ?? 0}/${dashboard?.goals?.total ?? 0}`;
 
   return (
-    <div className={styles.mainContent}>
+    <div className={styles.mainContent} data-cy="home-welcome">
       <div className={styles.contentWrapper}>
         <h1 className={styles.pageTitle}>Аналітика та грошовий потік</h1>
 
         <div className={styles.cardsSection}>
           <Card
+            data-cy="card-income-value"
             title="Місячний дохід"
             value={`${totalIncome}$`}
             footerText={totalIncome ? `За місяць` : ''}
@@ -65,6 +66,7 @@ export default function Home() {
           />
 
           <Card
+            data-cy="card-expense-value"
             title="Місячні витрати"
             value={`${totalExpense}$`}
             footerText={totalExpense ? `За місяць` : ''}
