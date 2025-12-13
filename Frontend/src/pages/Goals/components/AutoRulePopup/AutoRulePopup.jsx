@@ -11,7 +11,7 @@ export default function AutoRulePopup({
   open,
   onClose,
   onSave,
-  onDelete,           // <- проп для видалення
+  onDelete,          
   initialRule = null,
   wallets = []
 }) {
@@ -42,7 +42,7 @@ export default function AutoRulePopup({
       setError('');
       setTimeout(() => firstRef.current?.focus(), 20);
     }
-  }, [open, initialRule, wallets]); // initial змінна залежить від initialRule/wallets
+  }, [open, initialRule, wallets]); 
 
   useEffect(() => {
     function onKey(e) {
@@ -90,7 +90,6 @@ export default function AutoRulePopup({
 
   async function handleDeleteClick() {
     if (!form.id) return;
-    if (!window.confirm('Ви впевнені, що хочете видалити це правило? Цю дію неможливо скасувати.')) return;
 
     try {
       setBusy(true);

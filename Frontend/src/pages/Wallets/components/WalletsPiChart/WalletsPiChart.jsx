@@ -34,7 +34,7 @@ export default function WalletsPiChart({
             fill="#8884d8"   
               >
                 {data.map((entry, index) => (
-                  <Cell
+                  <Cell data-cy="pie-segment"
                     key={`cell-${index}`}
                     fill={entry.color || defaultColors[index % defaultColors.length]}
                     stroke="rgba(0,0,0,0.12)"

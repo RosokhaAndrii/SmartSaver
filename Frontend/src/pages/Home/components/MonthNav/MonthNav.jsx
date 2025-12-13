@@ -1,4 +1,3 @@
-// src/pages/Home/components/MonthNav/MonthNav.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import styles from "./MonthNav.module.css";
@@ -14,7 +13,6 @@ function monthLabel(date) {
 }
 
 export default function MonthNav({ month, year, onChange }) {
-  // month: 1..12
   const current = new Date(year, month - 1, 1);
 
   const goTo = (d) => {

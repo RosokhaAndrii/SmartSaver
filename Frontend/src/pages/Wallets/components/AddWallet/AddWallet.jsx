@@ -6,7 +6,7 @@ import styles from './AddWallet.module.css';
 
 export default function AddWallet({onClick}) {
   return (
-    <button className={styles.addButton} onClick={onClick}>
+    <button type='button' data-cy="add-wallet-button" className={styles.addButton} onClick={onClick}>
       <span className={styles.icon}><AddIcon></AddIcon></span>
       <p className={styles.title}>Додати гаманець</p>
     </button>

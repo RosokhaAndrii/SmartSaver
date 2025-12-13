@@ -67,7 +67,7 @@ export default function WalletPopup({
   }
 
   return createPortal(
-    <div className={styles.overlay} onMouseDown={onClose}>
+    <div data-cy="wallet-popup" className={styles.overlay} onMouseDown={onClose}>
       <div
         className={styles.modal}
         onMouseDown={(e) => e.stopPropagation()}
@@ -92,6 +92,7 @@ export default function WalletPopup({
           <label className={styles.label}>
             Назва
             <input
+              data-cy="wallet-title-input"
               ref={firstRef}
               name="title"
               value={form.title}
@@ -103,6 +104,7 @@ export default function WalletPopup({
           <label className={styles.label}>
             Початкова сума
             <input
+              data-cy="wallet-amount-input"
               name="amount"
               value={form.amount}
               onChange={handleChange}
@@ -114,6 +116,7 @@ export default function WalletPopup({
           <label className={styles.label}>
             Тип
             <select
+              data-cy="wallet-type-select"
               name="type"
               value={form.type}
               onChange={handleChange}
@@ -149,7 +152,7 @@ export default function WalletPopup({
               >
                 Скасувати
               </button>
-              <button type="submit" className={styles.btnCreate}>
+              <button type="submit" data-cy="wallet-save" className={styles.btnCreate}>
                 {initial ? "Зберегти" : "Створити"}
               </button>
             </div>

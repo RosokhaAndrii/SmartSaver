@@ -1,6 +1,6 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import { getAutoRulesForSourceWallet, executeRuleForAmount } from "./services/autoruleSercive.js";
+import { executeRuleForAmount  } from "./services/autoruleService.js";
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -149,6 +149,7 @@ export async function getCategoryIdByName(name) {
 
 export async function createTransactionForUser(userId, wallet_id, category_id, amount, description, date, is_auto = 0) {
   const conn = await pool.getConnection();
+  let insertId;
   try {
     await conn.beginTransaction();
 
@@ -157,6 +158,7 @@ export async function createTransactionForUser(userId, wallet_id, category_id, a
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [userId, wallet_id, category_id, amount, description, date, is_auto ? 1 : 0]
     );
+    insertId = ins.insertId;
 
     await conn.query(
       `UPDATE wallets SET balance = balance + ? WHERE id = ? AND user_id = ?`,
@@ -164,14 +166,14 @@ export async function createTransactionForUser(userId, wallet_id, category_id, a
     );
 
     if (Number(amount) > 0) {
-      const goalsRows = await conn.query(
+      const [goalsRows] = await conn.query(
         `SELECT id, saved_amount, target_amount
          FROM goals
          WHERE user_id = ? AND wallet_id = ? AND saved_amount < target_amount
          FOR UPDATE`,
         [userId, wallet_id]
       );
-      const goalsList = goalsRows[0] || goalsRows;
+      const goalsList = goalsRows || [];
       let remaining = Number(amount);
 
       for (const g of goalsList) {
@@ -182,7 +184,7 @@ export async function createTransactionForUser(userId, wallet_id, category_id, a
         if (need <= 0) continue;
 
         let add = Math.min(need, remaining);
-    add = Math.round(add * 100) / 100; 
+        add = Math.round(add * 100) / 100;
         await conn.query(
           `UPDATE goals SET saved_amount = saved_amount + ? WHERE id = ? AND user_id = ?`,
           [add, g.id, userId]
@@ -193,13 +195,184 @@ export async function createTransactionForUser(userId, wallet_id, category_id, a
 
     await conn.commit();
     conn.release();
-
-    return getTransactionDetailsById(ins.insertId);
   } catch (err) {
-    try { await conn.rollback(); } catch (e) {  }
+    try { await conn.rollback(); } catch (e) { }
     conn.release();
     console.error("createTransactionForUser error:", err);
     throw { status: 500, message: "Could not create transaction", details: err.message };
+  }
+
+  try {
+    if (!is_auto && Number(amount) > 0) {
+      console.log(`[auto-rules] fetching rules for user=${userId} sourceWallet=${wallet_id}`);
+      const svc = await import('./services/autoruleService.js');
+      const { getAutoRulesForSourceWallet, executeRuleForAmSount } = svc;
+
+      const rules = await getAutoRulesForSourceWallet(userId, wallet_id);
+      console.log(`[auto-rules] found ${rules.length} rules`);
+
+      for (const r of rules) {
+        try {
+          const transfer = Math.round((Number(amount) * (Number(r.percent) / 100)) * 100) / 100;
+          if (transfer > 0) {
+            console.log(`[auto-rules] executing rule ${r.id} transfer=${transfer}`);
+            await executeRuleForAmount(r, transfer);
+            console.log(`[auto-rules] executed rule ${r.id}`);
+          }
+        } catch (e) {
+          console.error("Auto-rule exec failed for rule", r.id, e && e.message ? e.message : e);
+        }
+      }
+    }
+  } catch (svcErr) {
+    console.error("Failed to run autorules after transaction:", svcErr);
+  }
+
+  return getTransactionDetailsById(insertId);
+}
+
+
+export async function updateTransactionForUser(userId, transactionId, { wallet_id, category_id, amount, description, date, type = null } = {}) {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [txRows] = await conn.query(
+      `SELECT id, user_id, wallet_id, category_id, amount
+       FROM transactions
+       WHERE id = ? FOR UPDATE`,
+      [transactionId]
+    );
+    const tx = txRows[0];
+    if (!tx) throw { status: 404, message: "Transaction not found" };
+    if (Number(tx.user_id) !== Number(userId)) throw { status: 403, message: "Not allowed" };
+
+    const oldAmount = Number(tx.amount || 0);
+    const newAmount = Number(amount);
+
+    const oldWalletId = tx.wallet_id;
+    const newWalletId = wallet_id ?? oldWalletId;
+
+    const walletIdsToLock = oldWalletId === newWalletId ? [oldWalletId] : [oldWalletId, newWalletId];
+    const [walletRows] = await conn.query(
+      `SELECT id, user_id, balance FROM wallets WHERE id IN (${walletIdsToLock.map(() => '?').join(',')}) FOR UPDATE`,
+      walletIdsToLock
+    );
+
+    const walletsMap = {};
+    for (const w of walletRows) walletsMap[w.id] = w;
+
+    for (const wid of walletIdsToLock) {
+      const w = walletsMap[wid];
+      if (!w) throw { status: 400, message: `Wallet ${wid} not found` };
+      if (Number(w.user_id) !== Number(userId)) throw { status: 403, message: "Wallet does not belong to user" };
+    }
+
+    if (oldWalletId === newWalletId) {
+      const delta = (isNaN(newAmount) ? 0 : newAmount) - oldAmount;
+      if (delta !== 0) {
+        await conn.query(`UPDATE wallets SET balance = balance + ? WHERE id = ?`, [delta, oldWalletId]);
+      }
+    } else {
+      await conn.query(`UPDATE wallets SET balance = balance - ? WHERE id = ?`, [oldAmount, oldWalletId]);
+      await conn.query(`UPDATE wallets SET balance = balance + ? WHERE id = ?`, [newAmount, newWalletId]);
+    }
+
+    const setParts = [];
+    const params = [];
+
+    if (wallet_id !== undefined) { setParts.push("wallet_id = ?"); params.push(wallet_id); }
+    if (category_id !== undefined) { setParts.push("category_id = ?"); params.push(category_id); }
+    if (amount !== undefined) { setParts.push("amount = ?"); params.push(amount); }
+    if (description !== undefined) { setParts.push("description = ?"); params.push(description); }
+    if (date !== undefined) { setParts.push("date = ?"); params.push(date); }
+    if (type !== null) { setParts.push("type = ?"); params.push(type); }
+
+    if (setParts.length > 0) {
+      params.push(transactionId);
+      await conn.query(
+        `UPDATE transactions SET ${setParts.join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        params
+      );
+    }
+
+    if (newAmount > oldAmount && newAmount > 0) {
+      let isIncome = false;
+      if (category_id) {
+        const [catRows] = await conn.query(`SELECT type FROM categories WHERE id = ?`, [category_id]);
+        isIncome = !!(catRows[0] && catRows[0].type === 'income');
+      } else {
+        isIncome = true;
+      }
+
+      if (isIncome) {
+        let diff = Math.round(((newAmount - oldAmount) || 0) * 100) / 100;
+        if (diff > 0) {
+          const [goalsRows] = await conn.query(
+            `SELECT id, saved_amount, target_amount
+             FROM goals
+             WHERE user_id = ? AND wallet_id = ? AND saved_amount < target_amount
+             FOR UPDATE`,
+            [userId, newWalletId]
+          );
+          const goalsList = goalsRows[0] || goalsRows;
+          let remaining = diff;
+          for (const g of goalsList) {
+            if (remaining <= 0) break;
+            const saved = Number(g.saved_amount || 0);
+            const target = Number(g.target_amount || 0);
+            const need = Math.max(0, target - saved);
+            if (need <= 0) continue;
+            let add = Math.min(need, remaining);
+            add = Math.round(add * 100) / 100;
+            await conn.query(`UPDATE goals SET saved_amount = saved_amount + ? WHERE id = ? AND user_id = ?`, [add, g.id, userId]);
+            remaining = Math.round((remaining - add) * 100) / 100;
+          }
+        }
+      }
+    }
+
+    await conn.commit();
+    conn.release();
+
+    return getTransactionDetailsById(transactionId);
+  } catch (err) {
+    try { await conn.rollback(); } catch (e) { /* ignore */ }
+    conn.release();
+    console.error("updateTransactionForUser error:", err);
+    throw { status: err.status || 500, message: err.message || "Could not update transaction", details: err.details || err.toString() };
+  }
+}
+
+export async function deleteTransactionForUser(userId, transactionId) {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [txRows] = await conn.query(
+      `SELECT id, user_id, wallet_id, amount FROM transactions WHERE id = ? FOR UPDATE`,
+      [transactionId]
+    );
+    const tx = txRows[0];
+    if (!tx) return false;
+    if (Number(tx.user_id) !== Number(userId)) throw { status: 403, message: "Not allowed" };
+
+    const walletId = tx.wallet_id;
+    const amount = Number(tx.amount || 0);
+
+    await conn.query(`UPDATE wallets SET balance = balance - ? WHERE id = ? AND user_id = ?`, [amount, walletId, userId]);
+
+    const res = await conn.query(`DELETE FROM transactions WHERE id = ?`, [transactionId]);
+
+    await conn.commit();
+    conn.release();
+
+    return res[0]?.affectedRows > 0 || (res.affectedRows && res.affectedRows > 0);
+  } catch (err) {
+    try { await conn.rollback(); } catch (e) { /* ignore */ }
+    conn.release();
+    console.error("deleteTransactionForUser error:", err);
+    throw { status: err.status || 500, message: err.message || "Could not delete transaction", details: err.details || err.toString() };
   }
 }
 

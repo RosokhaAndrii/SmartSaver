@@ -1,4 +1,3 @@
-// WalletItem.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import MoreFlipped from "../../../../assets/icons/More(flipped)";
@@ -13,7 +12,7 @@ export default function WalletItem({
   onEdit,         
 }) {
   return (
-    <div className={styles.row} role="listitem" data-id={id}>
+    <div data-cy="wallet-item" className={styles.row} role="listitem">
       <div className={styles.topRow}>
         <div className={styles.title} title={title}>{title}</div>
         <span className={styles.amount}>{amount}$</span>

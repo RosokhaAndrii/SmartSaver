@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react"; 
 import usePageTitle from "../../hooks/usePageTitle/usePageTitle";
 import Filter from "./components/Filter/Filter";
-import Dropbar from "./components/DropBar/Dropbar";
+import Dropbar from "./components/DropBar/DropBar";
 import TransactionDisplayContainer from "./components/TransactionsDisplayContainer/TransactionDisplayContainer";
 import AddTransaction from "./components/AddTransaction/AddTransaction";
 import TransactionPopup from "./components/TransactionPopup/TransactionPopup";
@@ -16,9 +16,8 @@ const periods = [
 ];
 
 function formatTxFromAPI(tx) {
-  const type =
-    tx.category_type || (Number(tx.amount) < 0 ? "expense" : "income");
-
+  let type = tx.category_type || (Number(tx.amount) < 0 ? "expense" : "income");
+  if (tx.type === "refund") type = "refund"; 
   return {
     id: tx.id,
     category: tx.category_id || null,
@@ -29,6 +28,7 @@ function formatTxFromAPI(tx) {
     date: tx.date, 
     note: tx.description || "",
     type: type,
+    checked: false,
   };
 }
 
@@ -42,6 +42,8 @@ export default function Transactions() {
 
   const [periodSelection, setPeriodSelection] = useState(null);
   const [popupOpen, setPopupOpen] = useState(false);
+
+  const [editingTx, setEditingTx] = useState(null);
 
   const [filters, setFilters] = useState({
     category: "",
@@ -108,6 +110,7 @@ export default function Transactions() {
       amount: tx.amount,
       description: tx.note,
       date: tx.date.split(".").reverse().join("-"), 
+      ...(tx.type === "refund" ? { type: "refund" } : {}),
     };
 
     try {
@@ -125,6 +128,51 @@ export default function Transactions() {
     } catch (err) {
       console.error("Помилка при створенні транзакції:", err);
       alert("Помилка при збереженні транзакції. Спробуйте пізніше.");
+    }
+  }
+
+  async function handleSaveEdit(tx) {
+    try {
+      const res = await authFetch(`http://localhost:8080/api/transactions/${tx.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          wallet_id: Number(tx.walletId),
+          category_id: tx.category ? Number(tx.category) : null,
+          amount: tx.amount,
+          description: tx.note,
+          date: tx.date.split(".").reverse().join("-"),
+          ...(tx.type === "refund" ? { type: "refund" } : {}),
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to update transaction");
+      }
+      const updated = await res.json();
+      setTransactions((prev) =>
+        prev.map((t) => (t.id === updated.id ? formatTxFromAPI(updated) : t)),
+      );
+    } catch (err) {
+      console.error("Помилка при оновленні транзакції:", err);
+      alert("Не вдалося оновити транзакцію.");
+      throw err;
+    }
+  }
+
+  async function handleDeleteIds(ids = []) {
+    if (!ids.length) return;
+    if (!window.confirm(`Видалити ${ids.length} транзакцій?`)) return;
+    try {
+      await Promise.all(
+        ids.map((id) =>
+          authFetch(`http://localhost:8080/api/transactions/${id}`, { method: "DELETE" }),
+        ),
+      );
+      setTransactions((prev) => prev.filter((t) => !ids.includes(t.id)));
+    } catch (err) {
+      console.error("Помилка при видаленні транзакцій:", err);
+      alert("Не вдалося видалити деякі транзакції.");
     }
   }
 
@@ -203,18 +251,17 @@ export default function Transactions() {
   }, []);
 
   const handleMenu = useCallback((id) => {
-    console.log("menu for", id);
-  }, []);
+    const t = transactions.find((x) => x.id === id);
+    if (t) {
+      setEditingTx(t);
+      setPopupOpen(true);
+    }
+  }, [transactions]);
 
-  if (loading) {
-    return (
-      <div className={styles.mainContent}>
-        <main className={styles.main}>
-          <p>Завантаження даних...</p>
-        </main>
-      </div>
-    );
-  }
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+    setEditingTx(null);
+  };
 
   return (
     <>
@@ -237,10 +284,11 @@ export default function Transactions() {
                 transactions={visibleTransactions}
                 onToggle={handleToggle}
                 onMenu={handleMenu}
+                onDeleteSelected={(ids) => handleDeleteIds(ids)}
               />
 
               <div style={{ marginTop: 18 }}>
-                <AddTransaction onClick={() => setPopupOpen(true)} />
+                <AddTransaction onClick={() => { setEditingTx(null); setPopupOpen(true); }} />
               </div>
             </section>
           </div>
@@ -249,10 +297,13 @@ export default function Transactions() {
 
       <TransactionPopup
         open={popupOpen}
-        onClose={() => setPopupOpen(false)}
-        onAdd={(tx) => {
-          handleAdd(tx);
-          setPopupOpen(false);
+        initialTransaction={editingTx}
+        onClose={handleClosePopup}
+        onAdd={async (tx) => {
+          await handleAdd(tx);
+        }}
+        onSave={async (tx) => {
+          await handleSaveEdit(tx);
         }}
         categories={categories}
         wallets={wallets}

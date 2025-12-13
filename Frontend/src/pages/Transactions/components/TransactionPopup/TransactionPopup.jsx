@@ -17,19 +17,37 @@ function formatDisplayDate(iso) {
   return `${dd}.${mm}.${yy}`;
 }
 
-const createInitialState = (category, walletsList) => ({
-  type: "expense",
-  amount: "", 
-  category: category ? category.id : "",
-  wallet: walletsList.length ? walletsList[0].id : "",
-  note: "",
-  date: todayIsoDate(),
-});
+const createInitialState = (category, walletsList, initialTx) => {
+  if (initialTx) {
+    const [dd, mm, yyyy] = (initialTx.date || "").split(".");
+    const iso = yyyy && mm && dd ? `${yyyy}-${mm}-${dd}` : todayIsoDate();
+    return {
+      id: initialTx.id,
+      type: initialTx.type || (Number(initialTx.amount) < 0 ? "expense" : "income"),
+      amount: Math.abs(Number(initialTx.amount || 0)),
+      category: initialTx.category || "",
+      wallet: initialTx.walletId || (walletsList.length ? walletsList[0].id : ""),
+      note: initialTx.note || "",
+      date: iso,
+    };
+  }
+
+  return {
+    type: "expense",
+    amount: "", 
+    category: category ? category.id : "",
+    wallet: walletsList.length ? walletsList[0].id : "",
+    note: "",
+    date: todayIsoDate(),
+  };
+};
 
 export default function TransactionPopup({
   open,
   onClose,
   onAdd,
+  onSave,
+  initialTransaction = null,
   categories = [],
   wallets = [],
 }) {
@@ -38,7 +56,7 @@ export default function TransactionPopup({
     defaultExpenseCategory || (categories.length ? categories[0] : null);
 
   const [form, setForm] = useState(
-    createInitialState(initialDefaultCategory, wallets),
+    createInitialState(initialDefaultCategory, wallets, initialTransaction),
   );
   const [error, setError] = useState("");
   const mountedRef = useRef(false);
@@ -48,7 +66,7 @@ export default function TransactionPopup({
   const radioGroupName = `tx-type-${idPrefix}`; 
 
   const visibleCategories = categories.filter(
-    (c) => c.type === form.type || c.type === "both",
+    (c) => c.type === form.type || c.type === "both" || form.type === "refund",
   );
 
   useEffect(() => {
@@ -60,22 +78,15 @@ export default function TransactionPopup({
       (categories.length ? categories[0] : null);
 
     if (open) {
-      const defaultForm = createInitialState(currentDefaultCategory, wallets);
-      const categoryIsVisible = visibleCategories.some(
-        (c) => c.id === form.category,
-      );
-
+      const defaultForm = createInitialState(currentDefaultCategory, wallets, initialTransaction);
       setForm((prev) => ({
         ...defaultForm,
-        category:
-          prev.category && !categoryIsVisible && categories.length
-            ? defaultForm.category
-            : defaultForm.category,
+        category: initialTransaction?.category ?? defaultForm.category,
       }));
       setError("");
       setTimeout(() => firstInputRef.current?.focus(), 20);
     }
-  }, [open, wallets, categories]); 
+  }, [open, wallets, categories, initialTransaction]);
 
   useEffect(() => {
     function onKey(e) {
@@ -98,7 +109,7 @@ export default function TransactionPopup({
   const handleTypeChange = (e) => {
     const newType = e.target.value;
     const newVisibleCategories = categories.filter(
-      (c) => c.type === newType || c.type === "both",
+      (c) => c.type === newType || c.type === "both" || newType === "refund",
     ); 
     const newDefaultCategory = newVisibleCategories.length
       ? newVisibleCategories[0].id
@@ -111,8 +122,9 @@ export default function TransactionPopup({
     }));
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
     const amountNum = Number(form.amount);
     if (!form.amount || Number.isNaN(amountNum) || amountNum === 0) {
       setError("Введіть коректну суму (не 0).");
@@ -125,8 +137,8 @@ export default function TransactionPopup({
     }
 
     const tx = {
-      id: Date.now(),
-      category: form.category,
+      id: form.id,
+      category: form.category || null,
       note: form.note,
       amount:
         form.type === "expense" ? -Math.abs(amountNum) : Math.abs(amountNum),
@@ -135,9 +147,15 @@ export default function TransactionPopup({
       type: form.type,
     };
 
-    onAdd(tx);
-    if (mountedRef.current) {
-      onClose();
+    try {
+      if (form.id && onSave) {
+        await onSave(tx);
+      } else if (!form.id && onAdd) {
+        await onAdd(tx);
+      }
+      if (mountedRef.current) onClose();
+    } catch (err) {
+      setError(err?.message || "Помилка при збереженні");
     }
   }
 
@@ -149,10 +167,10 @@ export default function TransactionPopup({
         onMouseDown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Додати транзакцію"
+        aria-label={form.id ? "Редагувати транзакцію" : "Додати транзакцію"}
       >
         <header className={styles.header}>
-          <h2 className={styles.title}>Нова транзакція</h2>
+          <h2 className={styles.title}>{form.id ? "Редагувати транзакцію" : "Нова транзакція"}</h2>
           <button
             className={styles.closeBtn}
             onClick={onClose}
@@ -207,7 +225,6 @@ export default function TransactionPopup({
               onChange={handleChange}
               className={styles.input}
             >
-              {/* ДОДАЄМО ВИДИМУ ОПЦІЮ ЗА ЗАМОВЧУВАННЯМ, ЯКЩО ID НЕ ВИЗНАЧЕНИЙ */}
               {!form.category && visibleCategories.length > 0 && (
                 <option value="" disabled hidden>
                   Виберіть категорію
@@ -216,7 +233,7 @@ export default function TransactionPopup({
 
               {visibleCategories.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.label}
+                  {c.label || c.name}
                 </option>
               ))}
               {visibleCategories.length === 0 && (
@@ -275,7 +292,7 @@ export default function TransactionPopup({
             </button>
 
             <button type="submit" className={styles.submit}>
-              Додати
+              {form.id ? "Зберегти" : "Додати"}
             </button>
           </div>
         </form>
@@ -287,8 +304,10 @@ export default function TransactionPopup({
 
 TransactionPopup.propTypes = {
   open: PropTypes.bool,
+  initialTransaction: PropTypes.object,
   onClose: PropTypes.func.isRequired,
-  onAdd: PropTypes.func.isRequired,
+  onAdd: PropTypes.func,
+  onSave: PropTypes.func,
   categories: PropTypes.array,
   wallets: PropTypes.array,
 };
@@ -297,4 +316,5 @@ TransactionPopup.defaultProps = {
   open: false,
   categories: [],
   wallets: [],
+  initialTransaction: null,
 };

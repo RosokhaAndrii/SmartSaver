@@ -238,7 +238,6 @@ export default function Goals() {
   }
 
   async function handleDeleteRule(ruleId) {
-    if (!window.confirm("Видалити це правило?")) return;
     try {
       const res = await authFetch(`http://localhost:8080/api/auto-rules/${ruleId}`, {
         method: "DELETE",
@@ -284,7 +283,6 @@ export default function Goals() {
       const data = await res.json();
       if (data.executed) {
         alert(`Правило виконано: ${data.amount}`);
-        // оновлюємо гаманці й правила
         await Promise.all([loadData(), loadRules()]);
       } else {
         alert(`Правило не виконано: ${data.reason || "не відомо чому"}`);
