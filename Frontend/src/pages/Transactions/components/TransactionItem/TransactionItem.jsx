@@ -21,7 +21,7 @@ export default function TransactionItem({
   }).format(Math.abs(amount));
 
   return (
-    <div className={styles.row} role="listitem" data-id={id}>
+    <div data-cy="tx-item" className={styles.row} role="listitem" data-id={id}>
       <label className={styles.left}>
         <input
           type="checkbox"
@@ -46,7 +46,8 @@ export default function TransactionItem({
       </div>
 
       <div className={styles.meta}>
-        <div
+        <div 
+          data-cy="tx-amount"
           className={`${styles.amount} ${isNegative ? styles.negative : styles.positive}`}
           aria-label={`Amount ${isNegative ? 'negative' : 'positive'}`}
         >

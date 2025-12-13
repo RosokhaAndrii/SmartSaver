@@ -18,7 +18,7 @@ export default function WalletsPiChart({
   const total = data.reduce((s, it) => s + (it.value || 0), 0);
 
   return (
-    <div className={styles.summary}>
+    <div data-cy="wallets-chart" className={styles.summary}>
       <div className={styles.left}>
         <div className={styles.chartWrap} aria-hidden>
           <ResponsiveContainer width="100%" height={170}>

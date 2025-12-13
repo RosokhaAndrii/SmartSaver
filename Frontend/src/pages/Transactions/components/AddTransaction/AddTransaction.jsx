@@ -6,7 +6,7 @@ import styles from './AddTransaction.module.css';
 export default function AddTransaction({onClick}) {
 
   return (
-    <button onClick={onClick} className={styles.addButton}>
+    <button data-cy="add-transaction" onClick={onClick} className={styles.addButton}>
       <span className={styles.icon}><AddIcon></AddIcon></span>
       <p className={styles.title}>Додати транзакцію</p>
     </button>

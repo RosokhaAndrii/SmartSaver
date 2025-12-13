@@ -133,6 +133,7 @@ export default function WalletPopup({
             {initial && (
               <div className={styles.deleteGroup}>
                 <button
+                  data-cy="wallet-delete-btn"
                   type="button"
                   className={styles.btnDelete}
                   onClick={handleDeleteClick}
@@ -152,7 +153,7 @@ export default function WalletPopup({
               >
                 Скасувати
               </button>
-              <button type="submit" data-cy="wallet-save" className={styles.btnCreate}>
+              <button type="submit"  data-cy="wallet-save" className={styles.btnCreate}>
                 {initial ? "Зберегти" : "Створити"}
               </button>
             </div>

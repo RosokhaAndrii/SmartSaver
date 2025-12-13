@@ -1,0 +1,9 @@
+{
+  "monthly_income": 0,
+  "monthly_expense": 0,
+  "total_balance": 0,
+  "goals": { "completed": 0, "total": 0 },
+  "spendings_by_category": [],
+  "period": { "end": "" },
+  "balance_history": []
+}

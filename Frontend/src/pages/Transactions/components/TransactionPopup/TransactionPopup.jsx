@@ -207,6 +207,7 @@ export default function TransactionPopup({
 
             <input
               ref={firstInputRef}
+              data-cy="tx-amount"
               name="amount"
               type="number"
               className={styles.input}
@@ -220,6 +221,7 @@ export default function TransactionPopup({
             <label className={styles.label}>Категорія</label>
 
             <select
+              data-cy="tx-category"
               name="category"
               value={form.category}
               onChange={handleChange}
@@ -248,6 +250,7 @@ export default function TransactionPopup({
             <label className={styles.label}>Гаманець</label>
 
             <select
+              data-cy="tx-wallet"
               name="wallet"
               value={form.wallet}
               onChange={handleChange}
@@ -265,6 +268,7 @@ export default function TransactionPopup({
             <label className={styles.label}>Дата</label>
 
             <input
+              data-cy="tx-date"
               name="date"
               type="date"
               value={form.date}
@@ -277,6 +281,7 @@ export default function TransactionPopup({
             <label className={styles.label}>Нотатка</label>
 
             <textarea
+              data-cy="tx-note"
               name="note"
               className={styles.textarea}
               value={form.note}

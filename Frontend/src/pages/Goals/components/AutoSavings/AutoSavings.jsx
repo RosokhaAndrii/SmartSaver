@@ -45,6 +45,7 @@ export default function AutoSavings({
 
       <footer className={styles.footer}>
         <button
+          data-cy="rule-toggle"
           type="button"
           className={styles.toggleBtn}
           onClick={onToggle}

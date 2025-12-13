@@ -1,0 +1,26 @@
+[
+  {
+    "id": 5,
+    "title": "Save 5% from Main → Savings",
+    "percent": 5,
+    "source_wallet_id": 1,
+    "target_wallet_id": 2,
+    "is_active": 1,
+    "schedule_cron": "0 0 1 * *",
+    "last_run": null,
+    "source_wallet_name": "Main",
+    "target_wallet_name": "Savings"
+  },
+  {
+    "id": 6,
+    "title": "Monthly top-up",
+    "percent": 10,
+    "source_wallet_id": 2,
+    "target_wallet_id": 1,
+    "is_active": 0,
+    "schedule_cron": "0 0 15 * *",
+    "last_run": "2025-11-15T00:00:00Z",
+    "source_wallet_name": "Savings",
+    "target_wallet_name": "Main"
+  }
+]

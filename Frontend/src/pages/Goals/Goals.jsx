@@ -337,6 +337,7 @@ export default function Goals() {
               <div className={styles.cardsGrid}>
                 {displayedGoals.map((g) => (
                   <GoalCard
+                    dataCy={`goal-card-${g.id}`}
                     key={g.id}
                     title={g.title}
                     subtitle={g.subtitle}

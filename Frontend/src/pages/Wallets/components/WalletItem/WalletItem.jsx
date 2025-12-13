@@ -14,13 +14,14 @@ export default function WalletItem({
   return (
     <div data-cy="wallet-item" className={styles.row} role="listitem">
       <div className={styles.topRow}>
-        <div className={styles.title} title={title}>{title}</div>
-        <span className={styles.amount}>{amount}$</span>
+        <div data-cy="wallet-title" className={styles.title} title={title}>{title}</div>
+        <span data-cy="wallet-amount" className={styles.amount}>{amount}$</span>
       </div>
 
       <div className={styles.bottomRow}>
         <div className={styles.left}>
           <button
+            data-cy="wallet-toggle"
             type="button"
             className={`${styles.switch} ${hidden ? styles.on : ""}`}
             onClick={() => onToggleHidden && onToggleHidden(id, !hidden)}
@@ -34,6 +35,7 @@ export default function WalletItem({
 
         <div className={styles.right}>
           <button
+            data-cy="wallet-edit"
             type="button"
             className={styles.menu}
             onClick={() => onEdit && onEdit(id)}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 101,
+    "amount": -12.5,
+    "date": "2025-12-01",
+    "category_id": 10,
+    "category_name": "Food",
+    "wallet_id": 1,
+    "wallet_name": "Main",
+    "description": "Lunch"
+  },
+  {
+    "id": 102,
+    "amount": 500,
+    "date": "2025-11-30",
+    "category_id": 11,
+    "category_name": "Salary",
+    "wallet_id": 1,
+    "wallet_name": "Main",
+    "description": "Nov salary"
+  }
+]

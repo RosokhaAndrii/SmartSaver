@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Card.module.css';
 
-export default function Card({ title, value, footerText, Icon, variant, footerColor }) {
+export default function Card({ title, value, footerText, Icon, variant, footerColor, dataCy }) {
   const cardClassName = `${styles.card} ${styles[variant]}`;
   const footerClassName = `${styles.footerText} ${styles[footerColor]}`;
   
   return (
-    <div className={cardClassName}>
+    <div className={cardClassName} data-cy={dataCy}>
       <div className={styles.header}>
         {Icon && (
           <span className={styles.iconWrapper}>
@@ -18,7 +18,7 @@ export default function Card({ title, value, footerText, Icon, variant, footerCo
       </div>
       
       <div className={styles.body}>
-        <div className={styles.value}>{value}</div>
+        <div data-cy={`card-${variant}-value`} className={styles.value}>{value}</div>
       </div>
       
       <div className={styles.footer}>

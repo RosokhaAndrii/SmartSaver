@@ -7,15 +7,15 @@ export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     plugins: {
-      react: pluginReact, // додаємо плагін
+      react: pluginReact, 
     },
     languageOptions: {
       globals: globals.browser,
       node: true,
     },
     extends: [
-      js.configs.recommended, // базова конфігурація для JS
-      pluginReact.configs.flat.recommended, // рекомендації від eslint-plugin-react
+      js.configs.recommended,
+      pluginReact.configs.flat.recommended,
     ],
   },
 ]);
